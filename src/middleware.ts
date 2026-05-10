@@ -23,6 +23,12 @@ export async function middleware(request: NextRequest) {
   const isAdminRoute   = path.startsWith('/admin') && path !== '/admin-login';
   const isStudentRoute = path.startsWith('/student');
 
+  // Collapse `/admin` and `/student` directly to their dashboards here in the
+  // edge — saves a full SSR pass on a server-component `redirect()` plus a
+  // second `requireAdmin()` DB round-trip downstream.
+  if (path === '/admin')   { const u = request.nextUrl.clone(); u.pathname = '/admin/dashboard';   return NextResponse.redirect(u); }
+  if (path === '/student') { const u = request.nextUrl.clone(); u.pathname = '/student/dashboard'; return NextResponse.redirect(u); }
+
   if (!user) {
     if (isAdminRoute) {
       const url = request.nextUrl.clone();

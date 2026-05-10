@@ -1,7 +1,9 @@
 import type { Metadata, Viewport } from 'next';
+import { Suspense } from 'react';
 import { Inter, Plus_Jakarta_Sans } from 'next/font/google';
 import './globals.css';
 import { ToastHost } from '@/components/ui/Toast';
+import { RouteProgress } from '@/components/ui/RouteProgress';
 
 const inter = Inter({
   subsets: ['latin'],
@@ -32,6 +34,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en" className={`${inter.variable} ${display.variable}`}>
       <body>
+        <Suspense fallback={null}>
+          <RouteProgress />
+        </Suspense>
         {children}
         <ToastHost />
       </body>
