@@ -62,7 +62,7 @@ export default async function HomePage() {
                 <div className="absolute bottom-5 left-5 right-5 glass rounded-2xl p-4">
                   <div className="flex items-center justify-between">
                     <div>
-                      <p className="text-xs font-semibold uppercase tracking-wider text-brand-700">Next cohort</p>
+                      <p className="text-xs font-semibold uppercase tracking-wider text-brand-700">Next batch</p>
                       <p className="font-display text-lg font-bold text-ink-900 mt-0.5">June 10, 2026</p>
                     </div>
                     <span className="badge-accent text-xs">8 seats left</span>
@@ -105,7 +105,7 @@ export default async function HomePage() {
           <div className="max-w-2xl">
             <Reveal><span className="eyebrow">Programs</span></Reveal>
             <Reveal delay={0.04}><h2 className="mt-3">Four career tracks. One platform.</h2></Reveal>
-            <Reveal delay={0.08}><p className="mt-3 text-ink-600 text-lg">Each program is 8–10 weeks of live cohort learning, hands-on labs, and 1:1 instructor reviews. Pick one — or combine.</p></Reveal>
+            <Reveal delay={0.08}><p className="mt-3 text-ink-600 text-lg">Each program is 8–10 weeks of live batch learning, hands-on labs, and 1:1 instructor reviews. Pick one — or combine.</p></Reveal>
           </div>
           <div className="mt-10 grid grid-cols-1 md:grid-cols-2 gap-5">
             {courses.map((c, i) => (
@@ -150,10 +150,10 @@ export default async function HomePage() {
           <div className="flex items-end justify-between flex-wrap gap-4">
             <div className="max-w-xl">
               <Reveal><span className="eyebrow">Upcoming batches</span></Reveal>
-              <Reveal delay={0.04}><h2 className="mt-3">Lock your seat for the next cohort.</h2></Reveal>
+              <Reveal delay={0.04}><h2 className="mt-3">Lock your seat for the next batch.</h2></Reveal>
               <Reveal delay={0.08}><p className="mt-3 text-ink-600">Seats fill on a first-come basis. Apply early to secure 1:1 onboarding with the instructor.</p></Reveal>
             </div>
-            <Link href="/courses" className="hidden sm:inline-flex btn-secondary btn-md">All cohorts</Link>
+            <Link href="/courses" className="hidden sm:inline-flex btn-secondary btn-md">All batches</Link>
           </div>
 
           <div className="mt-8 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
@@ -179,7 +179,7 @@ export default async function HomePage() {
                         <div className="h-full bg-gradient-to-r from-brand-500 to-brand-700" style={{ width: `${fill}%` }} />
                       </div>
                     </div>
-                    <Link href={`/apply?course=${c.slug}`} className="mt-5 btn-primary btn-md w-full justify-center">Apply for this cohort</Link>
+                    <Link href={`/apply?course=${c.slug}`} className="mt-5 btn-primary btn-md w-full justify-center">Apply for this batch</Link>
                   </div>
                 </Reveal>
               );

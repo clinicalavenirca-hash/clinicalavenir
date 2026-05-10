@@ -399,7 +399,11 @@ stable
 security definer
 set search_path = public
 as $$
+  -- Reads the role from the JWT first (set by the sync trigger above) so RLS
+  -- policies don't trigger a profile lookup on every query. Falls back to
+  -- profiles only for sessions whose JWT pre-dates the trigger.
   select coalesce(
+    (auth.jwt() -> 'app_metadata' ->> 'role') = 'admin',
     (select role = 'admin' from public.profiles where id = auth.uid()),
     false
   );

@@ -17,7 +17,7 @@ export default async function Page() {
         <div>
           <span className="eyebrow">Catalog</span>
           <h1 className="mt-2 text-2xl sm:text-3xl">Courses</h1>
-          <p className="mt-1 text-ink-600">Create new programs, update curriculum, and manage cohorts.</p>
+          <p className="mt-1 text-ink-600">Create new programs, update curriculum, and manage batches.</p>
         </div>
         <Link href="/admin/courses/new" className="btn-primary btn-md"><Plus className="w-4 h-4" strokeWidth={2.5} /> New course</Link>
       </div>
@@ -45,7 +45,7 @@ export default async function Page() {
             </div>
             <div className="p-5 flex-1 flex flex-col">
               <p className="text-sm text-ink-500">{c.timings || '—'}</p>
-              <p className="mt-1 text-xs text-ink-500">Cohort starts {c.cohortStart ? formatDate(c.cohortStart) : 'TBD'}</p>
+              <p className="mt-1 text-xs text-ink-500">Batch starts {c.cohortStart ? formatDate(c.cohortStart) : 'TBD'}</p>
               <div className="mt-5 grid grid-cols-3 gap-2">
                 <Link href={`/admin/courses/${c.id}/edit`} className="btn-secondary btn-sm justify-center">Edit</Link>
                 <Link href={`/admin/courses/${c.id}/modules`} className="btn-secondary btn-sm justify-center">Modules</Link>

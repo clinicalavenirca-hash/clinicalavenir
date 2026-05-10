@@ -2,6 +2,7 @@ import Link from 'next/link';
 import { Sparkles } from 'lucide-react';
 import { fetchAllCourses } from '@/lib/db/courses';
 import { fetchEnrolledCourseSlugs, fetchLearningStatus } from '@/lib/db/progress';
+import { fetchMyApplications } from '@/lib/db/myApplications';
 import { requireStudent } from '@/lib/db/session';
 import { Reveal } from '@/components/ui/Reveal';
 
@@ -9,13 +10,15 @@ export const dynamic = 'force-dynamic';
 
 export default async function MyCoursesPage() {
   const me = await requireStudent();
-  const [courses, enrolled, learning] = await Promise.all([
+  const [courses, enrolled, learning, myCourseApps] = await Promise.all([
     fetchAllCourses(),
     fetchEnrolledCourseSlugs(me.id),
-    fetchLearningStatus(me.id)
+    fetchLearningStatus(me.id),
+    fetchMyApplications(me.email)
   ]);
   const owned = courses.filter((c) => enrolled.includes(c.slug));
   const progressBySlug = new Map(learning.map((l) => [l.courseSlug, l]));
+  const appliedSlugs = new Set(myCourseApps.flatMap((a) => a.courses));
 
   return (
     <>
@@ -44,6 +47,7 @@ export default async function MyCoursesPage() {
           {owned.map((c, i) => {
             const p = progressBySlug.get(c.slug);
             const progress = p?.percent ?? 0;
+            const addedForYou = !appliedSlugs.has(c.slug) && !p?.lastWatchedAt;
             return (
               <Reveal key={c.id} delay={i * 0.04}>
                 <Link href={`/student/courses/${c.slug}`} className="card card-hover overflow-hidden group block">
@@ -55,7 +59,14 @@ export default async function MyCoursesPage() {
                       <p className="text-xs font-semibold text-brand-200 uppercase tracking-wider">{c.tagline}</p>
                       <h3 className="text-white text-2xl font-display font-bold mt-1">{c.title}</h3>
                     </div>
-                    <span className="absolute top-4 right-4 badge bg-white/15 text-white ring-1 ring-white/30 backdrop-blur">{c.duration}</span>
+                    <div className="absolute top-4 right-4 flex flex-col items-end gap-1.5">
+                      <span className="badge bg-white/15 text-white ring-1 ring-white/30 backdrop-blur">{c.duration}</span>
+                      {addedForYou && (
+                        <span className="badge bg-accent-500 text-white ring-1 ring-white/30 backdrop-blur inline-flex items-center gap-1">
+                          <Sparkles className="w-3 h-3" /> Added for you
+                        </span>
+                      )}
+                    </div>
                   </div>
                   <div className="p-5 sm:p-6">
                     <div className="flex items-center justify-between text-xs">

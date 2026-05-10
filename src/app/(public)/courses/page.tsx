@@ -47,14 +47,14 @@ export default async function CoursesPage() {
 
                 <div className="mt-5 grid grid-cols-2 sm:grid-cols-4 gap-4 text-sm">
                   <div><p className="text-xs uppercase tracking-wider text-ink-500 font-semibold">Schedule</p><p className="mt-1 text-ink-800 font-medium">{c.timings}</p></div>
-                  <div><p className="text-xs uppercase tracking-wider text-ink-500 font-semibold">Cohort</p><p className="mt-1 text-ink-800 font-medium">{c.cohortStart ? formatDate(c.cohortStart) : '—'}</p></div>
+                  <div><p className="text-xs uppercase tracking-wider text-ink-500 font-semibold">Batch starts</p><p className="mt-1 text-ink-800 font-medium">{c.cohortStart ? formatDate(c.cohortStart) : '—'}</p></div>
                   <div><p className="text-xs uppercase tracking-wider text-ink-500 font-semibold">Seats</p><p className="mt-1 text-ink-800 font-medium">{c.seatsRemaining} / {c.totalSeats}</p></div>
                   <div><p className="text-xs uppercase tracking-wider text-ink-500 font-semibold">Best for</p><p className="mt-1 text-ink-800 font-medium line-clamp-1">{c.audience}</p></div>
                 </div>
 
                 <div className="mt-6 flex flex-wrap gap-3">
                   <Link href={`/courses/${c.slug}`} className="btn-secondary btn-md">Curriculum & details</Link>
-                  <Link href={`/apply?course=${c.slug}`} className="btn-primary btn-md">Apply for this cohort</Link>
+                  <Link href={`/apply?course=${c.slug}`} className="btn-primary btn-md">Apply for this batch</Link>
                 </div>
               </div>
             </Reveal>

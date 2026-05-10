@@ -25,6 +25,10 @@ export default async function DashboardPage() {
   ]);
   const owned = courses.filter((c) => enrolled.includes(c.slug));
   const progressBySlug = new Map(learning.map((l) => [l.courseSlug, l]));
+  // Slugs the student themselves applied for (any status). Anything they're
+  // enrolled in that ISN'T here was added directly by admin — surface that
+  // with an "Added for you" pill until they start watching.
+  const appliedSlugs = new Set(myCourseApps.flatMap((a) => a.courses));
 
   return (
     <>
@@ -76,6 +80,7 @@ export default async function DashboardPage() {
               {owned.map((c) => {
                 const p = progressBySlug.get(c.slug);
                 const progress = p?.percent ?? 0;
+                const addedForYou = !appliedSlugs.has(c.slug) && !p?.lastWatchedAt;
                 return (
                   <Link key={c.id} href={`/student/courses/${c.slug}`} className="card card-hover overflow-hidden flex flex-col group">
                     <div className="relative aspect-video bg-ink-100">
@@ -83,6 +88,11 @@ export default async function DashboardPage() {
                       <img src={c.cover} alt="" className="absolute inset-0 w-full h-full object-cover" />}
                       <div className="absolute inset-0 bg-gradient-to-t from-ink-900/80 via-ink-900/20 to-transparent" />
                       <span className="absolute top-3 left-3 badge bg-white/15 text-white ring-1 ring-white/30 backdrop-blur">{c.duration}</span>
+                      {addedForYou && (
+                        <span className="absolute top-3 right-3 badge bg-accent-500 text-white ring-1 ring-white/30 backdrop-blur inline-flex items-center gap-1">
+                          <Sparkles className="w-3 h-3" /> Added for you
+                        </span>
+                      )}
                       <div className="absolute inset-0 grid place-items-center">
                         <span className="w-14 h-14 rounded-full bg-white/95 grid place-items-center shadow-soft-lg group-hover:scale-110 transition-transform">
                           <Play className="w-6 h-6 text-brand-700 ml-1" fill="currentColor" />
@@ -164,7 +174,7 @@ export default async function DashboardPage() {
           <Reveal as="div" delay={0.1} className="card card-pad bg-gradient-to-br from-ink-900 to-ink-800 text-white">
             <p className="text-xs font-semibold text-brand-300 uppercase tracking-wider">Tip</p>
             <p className="mt-2 font-semibold">Apply to 3 roles this week.</p>
-            <p className="mt-1 text-sm text-ink-300 leading-relaxed">Applications snowball. The earlier you start, the more interviews you'll have when you finish the cohort.</p>
+            <p className="mt-1 text-sm text-ink-300 leading-relaxed">Applications snowball. The earlier you start, the more interviews you'll have when you finish the program.</p>
             <Link href="/student/jobs" className="mt-4 btn-secondary btn-sm !bg-white/10 !text-white !border-white/20 hover:!bg-white/20">Open job board</Link>
           </Reveal>
         </div>

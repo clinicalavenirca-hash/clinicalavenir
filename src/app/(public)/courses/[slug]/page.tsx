@@ -43,7 +43,7 @@ export default async function CourseDetailPage({ params }: { params: { slug: str
             <Reveal delay={0.1} className="lg:col-span-4 glass rounded-2xl p-5 text-ink-900">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-xs font-semibold uppercase tracking-wider text-brand-700">Cohort starts</p>
+                  <p className="text-xs font-semibold uppercase tracking-wider text-brand-700">Batch starts</p>
                   <p className="font-display text-xl font-bold mt-0.5">{course.cohortStart ? formatDate(course.cohortStart, { month: 'long', day: 'numeric' }) : 'TBD'}</p>
                 </div>
                 <span className="badge-accent text-xs">{course.seatsRemaining} / {course.totalSeats} seats</span>
@@ -52,10 +52,10 @@ export default async function CourseDetailPage({ params }: { params: { slug: str
                 <div className="h-full bg-gradient-to-r from-brand-500 to-brand-700" style={{ width: `${fill}%` }} />
               </div>
               {canApply ? (
-                <Link href={`/apply?course=${course.slug}`} className="mt-4 btn-primary btn-md w-full justify-center">Apply for this cohort</Link>
+                <Link href={`/apply?course=${course.slug}`} className="mt-4 btn-primary btn-md w-full justify-center">Apply for this batch</Link>
               ) : (
                 <div className="mt-4 px-4 py-2.5 rounded-xl bg-ink-100 text-ink-600 text-center text-sm font-medium">
-                  {closed ? 'Registration closed for this cohort' : 'No seats remaining'}
+                  {closed ? 'Registration closed for this batch' : 'No seats remaining'}
                 </div>
               )}
             </Reveal>
@@ -123,7 +123,7 @@ export default async function CourseDetailPage({ params }: { params: { slug: str
                 {course.certificate && <p className="mt-1 text-sm text-ink-500">Includes verifiable certificate</p>}
                 <ul className="mt-5 space-y-3 text-sm">
                   {[
-                    `${course.duration} live cohort`,
+                    `${course.duration} live batch`,
                     'All sessions recorded within 24 hrs',
                     'Job board tagged to this track',
                     'Resume builder + interview prep'
@@ -141,11 +141,11 @@ export default async function CourseDetailPage({ params }: { params: { slug: str
                   </>
                 ) : (
                   <div className="mt-6 p-4 rounded-xl bg-ink-50 border border-ink-100 text-center">
-                    <p className="text-sm font-semibold text-ink-900">{closed ? 'Registration closed' : 'Cohort full'}</p>
+                    <p className="text-sm font-semibold text-ink-900">{closed ? 'Registration closed' : 'Batch full'}</p>
                     <p className="text-xs text-ink-600 mt-1">
                       {closed
-                        ? 'Applications for this cohort are no longer accepted. Browse other programs to find one that fits your timeline.'
-                        : 'Every seat in this cohort is taken. Check back when the next cohort opens.'}
+                        ? 'Applications for this batch are no longer accepted. Browse other programs to find one that fits your timeline.'
+                        : 'Every seat in this batch is taken. Check back when the next batch opens.'}
                     </p>
                     <Link href="/courses" className="mt-3 btn-secondary btn-sm w-full justify-center">View open programs</Link>
                   </div>

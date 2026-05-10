@@ -5,7 +5,7 @@ import { Play, Check, Lock, ChevronDown, Loader2 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import type { Course, Module } from '@/lib/data';
 import { VideoPlayer } from './VideoPlayer';
-import { cn, formatDate } from '@/lib/utils';
+import { cn } from '@/lib/utils';
 import { toast } from '@/components/ui/Toast';
 import { markVideoWatched, completeModule } from '@/app/actions/progress';
 
@@ -97,7 +97,7 @@ export function CoursePlayer({ course, modules, watchedVideoIds, completedModule
           <div className="mt-5 grid grid-cols-2 sm:grid-cols-4 gap-3 text-sm">
             <div className="p-3 rounded-xl bg-ink-50"><p className="text-xs text-ink-500">Modules</p><p className="font-semibold mt-0.5">{modules.length}</p></div>
             <div className="p-3 rounded-xl bg-ink-50"><p className="text-xs text-ink-500">Lessons</p><p className="font-semibold mt-0.5">{modules.reduce((a, m) => a + m.videos.length, 0)}</p></div>
-            <div className="p-3 rounded-xl bg-ink-50"><p className="text-xs text-ink-500">Cohort starts</p><p className="font-semibold mt-0.5">{course.cohortStart ? formatDate(course.cohortStart) : 'TBD'}</p></div>
+            <div className="p-3 rounded-xl bg-ink-50"><p className="text-xs text-ink-500">Schedule</p><p className="font-semibold mt-0.5">{course.timings || '—'}</p></div>
             <div className="p-3 rounded-xl bg-ink-50"><p className="text-xs text-ink-500">Certificate</p><p className="font-semibold mt-0.5">{course.certificate ? 'Yes' : 'No'}</p></div>
           </div>
         </div>

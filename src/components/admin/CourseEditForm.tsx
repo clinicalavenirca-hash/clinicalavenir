@@ -168,11 +168,11 @@ export function CourseEditForm({ course }: { course: Course | null }) {
         </div>
 
         <div className="card card-pad">
-          <h3 className="text-lg font-display font-semibold mb-4">Cohort & seats</h3>
+          <h3 className="text-lg font-display font-semibold mb-4">Batch & seats</h3>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div><label className="label">Registration opens</label><input type="date" className="input" value={registrationStart} onChange={(e) => setRegistrationStart(e.target.value)} /></div>
             <div><label className="label">Registration deadline</label><input type="date" className="input" value={registrationEnd} onChange={(e) => setRegistrationEnd(e.target.value)} /></div>
-            <div><label className="label">Cohort start</label><input type="date" className="input" value={cohortStart} onChange={(e) => setCohortStart(e.target.value)} /></div>
+            <div><label className="label">Batch start date</label><input type="date" className="input" value={cohortStart} onChange={(e) => setCohortStart(e.target.value)} /></div>
             <div><label className="label">Total seats</label><input type="number" className="input" value={totalSeats} onChange={(e) => setTotalSeats(e.target.value === '' ? '' : Number(e.target.value))} /></div>
             <div><label className="label">Seats remaining</label><input type="number" className="input" value={seatsRemaining} onChange={(e) => setSeatsRemaining(e.target.value === '' ? '' : Number(e.target.value))} /></div>
             <div className="flex items-end">
