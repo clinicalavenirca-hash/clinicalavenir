@@ -2,21 +2,49 @@
 @tailwind components;
 @tailwind utilities;
 
+/* @property registration for the conic gradient angle — used by the shiny CTA */
+@property --gradient-angle {
+  syntax: '<angle>';
+  initial-value: 0deg;
+  inherits: false;
+}
+
 @layer base {
   :root {
-    --ring-focus: 0 0 0 3px rgba(13, 148, 136, 0.18);
+    --ring-focus: 0 0 0 3px rgba(99, 102, 241, 0.22);
   }
-  html { -webkit-font-smoothing: antialiased; text-rendering: optimizeLegibility; }
-  body { @apply font-sans bg-ink-50 text-ink-900 antialiased; min-height: 100dvh; }
+  html {
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+    scroll-behavior: smooth;
+  }
+  body {
+    @apply font-sans bg-ink-50 text-ink-900 antialiased;
+    min-height: 100dvh;
+    font-feature-settings: 'ss01', 'cv11';
+  }
   h1, h2, h3, h4 { @apply font-display tracking-tight; }
-  h1 { @apply text-3xl sm:text-4xl lg:text-5xl font-bold leading-tight; }
-  h2 { @apply text-2xl sm:text-3xl font-bold leading-tight; }
-  h3 { @apply text-xl sm:text-2xl font-semibold; }
+  h1 { @apply text-3xl sm:text-4xl lg:text-5xl font-bold leading-[1.05]; letter-spacing: -0.02em; }
+  h2 { @apply text-2xl sm:text-3xl lg:text-4xl font-bold leading-[1.1]; letter-spacing: -0.02em; }
+  h3 { @apply text-xl sm:text-2xl font-semibold; letter-spacing: -0.015em; }
   h4 { @apply text-lg font-semibold; }
   a  { @apply transition-colors; }
-  ::selection { background: #14b8a6; color: white; }
+  ::selection { background: #6366F1; color: white; }
   *:focus-visible { outline: none; box-shadow: var(--ring-focus); border-radius: 6px; }
   input, select, textarea { font-family: inherit; }
+
+  /* Page-wide subtle noise overlay for premium feel — opt-in via .noise-bg */
+  .noise-bg {
+    position: relative;
+  }
+  .noise-bg::after {
+    content: '';
+    position: absolute; inset: 0;
+    pointer-events: none;
+    opacity: 0.025;
+    mix-blend-mode: overlay;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  }
 }
 
 @layer components {
@@ -24,11 +52,11 @@
   .container-tight{ @apply max-w-4xl mx-auto px-4 sm:px-6; }
 
   .btn { @apply inline-flex items-center justify-center gap-2 font-medium rounded-xl transition-all duration-200 select-none whitespace-nowrap focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-brand-500 disabled:opacity-50 disabled:cursor-not-allowed; }
-  .btn-primary { @apply btn bg-brand-600 text-white hover:bg-brand-700 active:bg-brand-800 shadow-soft hover:shadow-soft-md active:scale-[0.98]; }
-  .btn-secondary { @apply btn bg-white text-ink-900 border border-ink-200 hover:bg-ink-50 hover:border-ink-300 active:scale-[0.98]; }
+  .btn-primary { @apply btn bg-ink-950 text-white hover:bg-ink-900 active:bg-ink-800 shadow-soft hover:shadow-glow-brand active:scale-[0.98] ring-1 ring-inset ring-white/10; }
+  .btn-secondary { @apply btn bg-white text-ink-900 border border-ink-200 hover:border-ink-900 hover:bg-ink-50 active:scale-[0.98]; }
   .btn-ghost  { @apply btn text-ink-700 hover:bg-ink-100 active:bg-ink-200; }
   .btn-danger { @apply btn bg-rose-600 text-white hover:bg-rose-700 active:bg-rose-800 shadow-soft; }
-  .btn-accent { @apply btn bg-accent-500 text-ink-900 hover:bg-accent-400 active:bg-accent-600 shadow-soft; }
+  .btn-accent { @apply btn bg-accent-500 text-white hover:bg-accent-600 active:bg-accent-700 shadow-soft; }
   .btn-sm { @apply px-3 py-1.5 text-sm rounded-lg; }
   .btn-md { @apply px-4 py-2.5 text-sm; }
   .btn-lg { @apply px-6 py-3 text-base; }
@@ -40,7 +68,7 @@
   .error { @apply text-xs text-rose-600 mt-1.5; }
 
   .card     { @apply bg-white rounded-2xl shadow-soft border border-ink-100; }
-  .card-hover { @apply transition-all duration-200 hover:shadow-soft-lg hover:-translate-y-0.5; }
+  .card-hover { @apply transition-all duration-300 hover:shadow-soft-lg hover:-translate-y-0.5; }
   .card-pad { @apply p-5 sm:p-6; }
 
   .badge { @apply inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-medium; }
@@ -51,10 +79,12 @@
   .badge-danger  { @apply badge bg-rose-50 text-rose-700 ring-1 ring-inset ring-rose-200; }
   .badge-ink     { @apply badge bg-ink-100 text-ink-700 ring-1 ring-inset ring-ink-200; }
 
-  .eyebrow { @apply inline-block text-xs sm:text-sm font-semibold tracking-wider uppercase text-brand-700; }
+  .eyebrow { @apply inline-block text-xs sm:text-sm font-semibold tracking-[0.18em] uppercase text-brand-700; }
+  /* Editorial serif eyebrow — used on dark sections */
+  .eyebrow-serif { @apply inline-block text-sm sm:text-base font-serif italic text-accent-500 tracking-tight; }
 
-  .nav-link { @apply px-3 py-2 rounded-lg text-sm font-medium text-ink-600 hover:text-ink-900 hover:bg-ink-100 transition-colors; }
-  .nav-link-active { @apply text-brand-700 bg-brand-50 hover:bg-brand-100 hover:text-brand-700; }
+  .nav-link { @apply px-3 py-2 rounded-lg text-sm font-medium text-ink-700 hover:text-ink-950 hover:bg-ink-100/80 transition-colors; }
+  .nav-link-active { @apply text-ink-950 bg-ink-100; }
   .side-link { @apply flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium text-ink-600 hover:text-ink-900 hover:bg-ink-100 transition-colors; }
   .side-link-active { @apply bg-brand-50 text-brand-700 hover:bg-brand-100 hover:text-brand-700; }
 
@@ -63,32 +93,136 @@
   .table tbody td { @apply px-4 py-3 border-b border-ink-100; }
   .table tbody tr:hover { @apply bg-ink-50/60; }
 
+  /* Editorial hero gradient — warm cream → cool white, no teal anywhere */
   .hero-gradient {
     background:
-      radial-gradient(60% 60% at 80% 0%, rgba(13,148,136,0.18) 0%, transparent 60%),
-      radial-gradient(50% 50% at 20% 100%, rgba(245,158,11,0.12) 0%, transparent 60%),
-      linear-gradient(180deg, #ffffff 0%, #f8fafc 100%);
+      radial-gradient(60% 50% at 90% 10%, rgba(99,102,241,0.12) 0%, transparent 60%),
+      radial-gradient(40% 40% at 10% 90%, rgba(242,92,66,0.10) 0%, transparent 60%),
+      linear-gradient(180deg, #FAF7F2 0%, #FFFFFF 65%);
   }
   .auth-gradient {
     background:
-      radial-gradient(60% 60% at 50% 0%, rgba(13,148,136,0.15) 0%, transparent 70%),
-      linear-gradient(160deg, #f0fdfa 0%, #ffffff 50%, #fffbeb 100%);
+      radial-gradient(50% 50% at 50% 0%, rgba(99,102,241,0.12) 0%, transparent 70%),
+      linear-gradient(160deg, #F8FAFC 0%, #FFFFFF 50%, #FAF7F2 100%);
   }
   .glass {
-    background: rgba(255,255,255,0.7);
-    backdrop-filter: saturate(140%) blur(14px);
-    -webkit-backdrop-filter: saturate(140%) blur(14px);
+    background: rgba(255,255,255,0.72);
+    backdrop-filter: saturate(160%) blur(18px);
+    -webkit-backdrop-filter: saturate(160%) blur(18px);
     border: 1px solid rgba(255,255,255,0.6);
   }
+  .glass-dark {
+    background: rgba(5,7,13,0.5);
+    backdrop-filter: saturate(160%) blur(18px);
+    -webkit-backdrop-filter: saturate(160%) blur(18px);
+    border: 1px solid rgba(255,255,255,0.08);
+  }
+
+  /* Shiny conic CTA — full premium treatment. Wraps a `.shiny-inner` child. */
+  .shiny-btn {
+    position: relative;
+    isolation: isolate;
+    border-radius: 9999px;
+    padding: 1px;
+    background: conic-gradient(from var(--gradient-angle), #6366F1, #F25C42, #6366F1);
+    animation: spin-slow 6s linear infinite;
+  }
+  .shiny-btn::after {
+    content: '';
+    position: absolute;
+    inset: -6px;
+    border-radius: 9999px;
+    background: inherit;
+    filter: blur(14px);
+    opacity: 0.45;
+    z-index: -1;
+    animation: inherit;
+  }
+  .shiny-inner {
+    @apply inline-flex items-center justify-center gap-2 rounded-full bg-ink-950 text-white px-6 py-3 text-base font-medium ring-1 ring-inset ring-white/10 transition-transform;
+  }
+  .shiny-btn:hover .shiny-inner { transform: scale(0.98); }
+
+  /* Magnetic hover wrapper — pairs with framer-motion in JS */
+  .magnetic { display: inline-block; will-change: transform; }
 
   .kanban-col { @apply flex flex-col gap-3 min-w-[280px] sm:min-w-0 sm:flex-1 bg-ink-100/60 rounded-2xl p-3; }
   .kanban-card { @apply bg-white rounded-xl p-4 shadow-soft border border-ink-100 cursor-grab active:cursor-grabbing transition-shadow hover:shadow-soft-md; }
 
   .scroll-thin::-webkit-scrollbar { width: 8px; height: 8px; }
-  .scroll-thin::-webkit-scrollbar-thumb { @apply bg-ink-200 rounded-full; }
-  .scroll-thin::-webkit-scrollbar-thumb:hover { @apply bg-ink-300; }
+  .scroll-thin::-webkit-scrollbar-thumb { @apply bg-ink-300 rounded-full; }
+  .scroll-thin::-webkit-scrollbar-thumb:hover { @apply bg-ink-400; }
 
   .stat-card { @apply card card-pad flex items-start justify-between gap-4 card-hover; }
+
+  /* Dotted background — used behind hero typographic stack */
+  .dot-grid {
+    background-image: radial-gradient(rgba(15,23,42,0.10) 1px, transparent 1px);
+    background-size: 22px 22px;
+  }
+  .dot-grid-dark {
+    background-image: radial-gradient(rgba(255,255,255,0.08) 1px, transparent 1px);
+    background-size: 22px 22px;
+  }
+
+  /* Subtle animated grid lines — used as a backdrop on the dark CTA section */
+  .grid-lines {
+    background-image:
+      linear-gradient(rgba(255,255,255,0.04) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255,255,255,0.04) 1px, transparent 1px);
+    background-size: 64px 64px;
+  }
+
+  /* Cobalt accent underline that draws in on mount — used under highlighted hero words */
+  .accent-underline {
+    position: relative;
+    display: inline-block;
+  }
+  .accent-underline::after {
+    content: '';
+    position: absolute;
+    left: 0; right: 0; bottom: 0.05em;
+    height: 0.18em;
+    background: linear-gradient(90deg, #F25C42 0%, #6366F1 100%);
+    transform-origin: left center;
+    border-radius: 999px;
+    animation: underline-sweep 700ms cubic-bezier(0.65,0,0.35,1) 300ms both;
+    z-index: -1;
+    opacity: 0.85;
+  }
+
+  /* Marquee strip — for trust strip / company logos */
+  .marquee-track {
+    display: flex;
+    gap: 4rem;
+    width: max-content;
+    animation: marquee-x 40s linear infinite;
+  }
+  .marquee-mask {
+    -webkit-mask-image: linear-gradient(90deg, transparent, black 8%, black 92%, transparent);
+            mask-image: linear-gradient(90deg, transparent, black 8%, black 92%, transparent);
+  }
+
+  /* 3D-tilt program card — adds perspective for the inner transform */
+  .tilt-card { perspective: 1200px; }
+  .tilt-card-inner {
+    transition: transform 350ms cubic-bezier(0.34,1.56,0.64,1);
+    transform-style: preserve-3d;
+  }
+
+  /* Reveal-text per-letter container — letters animate in via Framer */
+  .reveal-text-wrap { display: inline-block; }
+  .reveal-text-wrap .ch {
+    display: inline-block;
+    will-change: transform, opacity;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .shiny-btn, .shiny-btn::after, .accent-underline::after, .marquee-track {
+    animation: none !important;
+  }
+  .tilt-card-inner { transition: none !important; }
 }
 
 @media print {
@@ -106,4 +240,3 @@
   }
   @page { size: A4; margin: 0; }
 }
-

@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { Sparkles } from 'lucide-react';
+import { ArrowUpRight, BookmarkCheck } from 'lucide-react';
 import { fetchAllCourses } from '@/lib/db/courses';
 import { fetchEnrolledCourseSlugs, fetchLearningStatus } from '@/lib/db/progress';
 import { fetchMyApplications } from '@/lib/db/myApplications';
@@ -29,7 +29,7 @@ export default async function MyCoursesPage() {
           <p className="mt-1 text-ink-600">Pick up where you left off, or jump back to a key concept.</p>
         </div>
         <Link href="/apply" className="btn-primary btn-md">
-          <Sparkles className="w-4 h-4" />
+          <ArrowUpRight className="w-4 h-4" strokeWidth={2.2} />
           Apply for another course
         </Link>
       </div>
@@ -38,7 +38,7 @@ export default async function MyCoursesPage() {
         <div className="card card-pad text-center py-12">
           <p className="text-sm text-ink-500 mb-5">You aren&apos;t enrolled in any courses yet. Once admin enrols you, your courses will appear here.</p>
           <Link href="/apply" className="btn-primary btn-md">
-            <Sparkles className="w-4 h-4" />
+            <ArrowUpRight className="w-4 h-4" strokeWidth={2.2} />
             Apply for a course
           </Link>
         </div>
@@ -63,7 +63,7 @@ export default async function MyCoursesPage() {
                       <span className="badge bg-white/15 text-white ring-1 ring-white/30 backdrop-blur">{c.duration}</span>
                       {addedForYou && (
                         <span className="badge bg-accent-500 text-white ring-1 ring-white/30 backdrop-blur inline-flex items-center gap-1">
-                          <Sparkles className="w-3 h-3" /> Added for you
+                          <BookmarkCheck className="w-3 h-3" strokeWidth={2.4} /> Added for you
                         </span>
                       )}
                     </div>

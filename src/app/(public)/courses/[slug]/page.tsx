@@ -25,11 +25,11 @@ export default async function CourseDetailPage({ params }: { params: { slug: str
   return (
     <>
       <CoursesRealtime />
-      <section className="relative bg-ink-900 text-white overflow-hidden">
+      <section className="relative bg-ink-950 text-white overflow-hidden">
         {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img src={course.cover} alt="" className="absolute inset-0 w-full h-full object-cover opacity-30" />
-        <div className={`absolute inset-0 bg-gradient-to-b ${course.color} opacity-90`} />
-        <div className="absolute inset-0 bg-gradient-to-t from-ink-900 via-transparent" />
+        <img src={course.cover} alt="" className="absolute inset-0 w-full h-full object-cover opacity-50" />
+        {/* Soft ink wash so text stays legible — no heavy color overlay */}
+        <div className="absolute inset-0 bg-gradient-to-t from-ink-950 via-ink-950/70 to-ink-950/40" />
         <div className="relative container-app py-16 sm:py-20 lg:py-24">
           <Link href="/courses" className="inline-flex items-center gap-1.5 text-white/80 hover:text-white text-sm">
             <ArrowLeft className="w-4 h-4" /> All courses

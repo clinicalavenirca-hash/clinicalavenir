@@ -64,7 +64,7 @@ export function RouteProgress() {
           exit={{ opacity: 0, transition: { duration: 0.2 } }}
         >
           <motion.div
-            className="h-full bg-brand-500 shadow-[0_0_8px_rgba(13,148,136,0.7)]"
+            className="h-full bg-accent-500 shadow-[0_0_8px_rgba(242,92,66,0.6)]"
             initial={{ width: '0%' }}
             animate={{ width: finishing ? '100%' : '90%' }}
             transition={{ duration: finishing ? 0.2 : 6, ease: 'easeOut' }}

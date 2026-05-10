@@ -32,7 +32,7 @@ export default async function Page() {
               ) : (
                 <div className="absolute inset-0 grid place-items-center text-ink-400 text-sm">No cover image</div>
               )}
-              <div className={`absolute inset-0 bg-gradient-to-t ${c.color} opacity-70`} />
+              <div className="absolute inset-x-0 bottom-0 h-2/3 bg-gradient-to-t from-ink-950/75 via-ink-950/30 to-transparent" />
               <span className="absolute top-3 left-3 badge bg-white/15 text-white ring-1 ring-white/30 backdrop-blur">{c.duration || '—'}</span>
               <div className="absolute top-3 right-3 flex flex-col items-end gap-1">
                 <span className="badge bg-white/95 text-ink-700 text-[11px]">{c.seatsRemaining}/{c.totalSeats} seats</span>

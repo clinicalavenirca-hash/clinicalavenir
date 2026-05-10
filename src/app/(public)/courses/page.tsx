@@ -30,7 +30,8 @@ export default async function CoursesPage() {
               <div className="relative lg:col-span-4 aspect-[16/10] lg:aspect-auto">
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img src={c.cover} alt="" className="absolute inset-0 w-full h-full object-cover" />
-                <div className={`absolute inset-0 bg-gradient-to-tr ${c.color} opacity-70`} />
+                {/* Soft bottom tint only — keep cover image legible */}
+                <div className="absolute inset-x-0 bottom-0 h-1/2 bg-gradient-to-t from-ink-950/60 via-ink-950/20 to-transparent" />
                 <span className="absolute top-4 left-4 badge bg-white/15 text-white ring-1 ring-white/30 backdrop-blur">{c.duration}</span>
               </div>
               <div className="lg:col-span-8 p-6 sm:p-8 flex flex-col">

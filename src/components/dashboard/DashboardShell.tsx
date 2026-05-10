@@ -26,11 +26,8 @@ export function DashboardShell({ variant, profile, sidebar, children }: Props) {
             <Menu className="w-6 h-6" />
           </button>
           <Link href={isAdmin ? '/admin/dashboard' : '/student/dashboard'} className="flex items-center gap-2">
-            <span className={cn('w-8 h-8 rounded-lg text-white grid place-items-center', isAdmin ? 'bg-ink-900' : 'bg-brand-600')}>
-              <svg viewBox="0 0 24 24" className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth={2.5}>
-                <path d="M12 2 L4 7 L12 12 L20 7 Z" />
-              </svg>
-            </span>
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img src="/favicon.jpg" alt="" className="w-8 h-8 rounded-md" />
             <span className="font-display font-bold text-ink-900">
               Avenir{isAdmin && <span className="text-brand-600"> Admin</span>}
             </span>

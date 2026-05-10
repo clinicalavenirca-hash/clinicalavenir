@@ -1,106 +1,115 @@
 import Image from 'next/image';
-import { Briefcase, MapPin, GraduationCap, FileCheck2 } from 'lucide-react';
 import type { Instructor } from '@/lib/data';
 import { Reveal } from '@/components/ui/Reveal';
 
+/**
+ * Instructor introduction. Compact two-column layout — photo capped at a
+ * fixed max-height on the left, bio + tight stat strip on the right. The
+ * full bio is shown but constrained in font size so the section fits
+ * within a single viewport on a typical laptop screen.
+ */
 export function InstructorSection({ instructor }: { instructor: Instructor }) {
   return (
-    <section className="py-16 sm:py-20 lg:py-24 bg-ink-900 text-white relative overflow-hidden">
-      {/* Decorative glows */}
-      <div className="absolute inset-0 opacity-30 pointer-events-none">
-        <div className="absolute -top-32 -right-32 w-96 h-96 rounded-full bg-brand-600 blur-3xl" />
-        <div className="absolute -bottom-32 -left-32 w-96 h-96 rounded-full bg-accent-600 blur-3xl" />
+    <section className="py-12 sm:py-16 lg:py-20 bg-ink-950 text-white relative overflow-hidden">
+      {/* Soft decorative glows */}
+      <div className="absolute inset-0 opacity-25 pointer-events-none">
+        <div className="absolute -top-32 -right-32 w-80 h-80 rounded-full bg-brand-600 blur-3xl" />
+        <div className="absolute -bottom-32 -left-32 w-80 h-80 rounded-full bg-accent-600 blur-3xl" />
       </div>
 
       <div className="container-app relative">
-        <div className="max-w-2xl mb-12 lg:mb-16">
-          <Reveal><span className="eyebrow !text-brand-400">Meet your instructor</span></Reveal>
-          <Reveal delay={0.04}>
-            <h2 className="mt-3 text-white">Real practitioner. Weekly office hours.</h2>
-          </Reveal>
-          <Reveal delay={0.08}>
-            <p className="mt-4 text-ink-200 text-lg leading-relaxed">
-              Avenir isn&apos;t taught by career educators — it&apos;s taught by someone running submissions and trials right now.
-            </p>
-          </Reveal>
+        {/* Compact header */}
+        <div className="mb-8 lg:mb-10 flex items-baseline justify-between flex-wrap gap-3">
+          <div>
+            <Reveal>
+              <span className="eyebrow !text-brand-400">Meet your instructor</span>
+            </Reveal>
+            <Reveal delay={0.04}>
+              <h2 className="mt-2 text-white text-2xl sm:text-3xl lg:text-4xl">
+                Real practitioner. Weekly office hours.
+              </h2>
+            </Reveal>
+          </div>
         </div>
 
-        <div className="grid lg:grid-cols-12 gap-10 lg:gap-12 items-start">
-          <Reveal className="lg:col-span-5 relative">
-            <div className="relative aspect-[4/5] rounded-3xl overflow-hidden shadow-soft-xl ring-1 ring-white/10">
+        <div className="grid lg:grid-cols-12 gap-8 lg:gap-10 items-start">
+          {/* Photo — capped height so it doesn't dominate */}
+          <Reveal className="lg:col-span-5">
+            <div className="relative aspect-[4/5] max-h-[28rem] mx-auto lg:mx-0 rounded-2xl overflow-hidden shadow-soft-xl ring-1 ring-white/10">
               <Image
                 src={instructor.photo}
                 alt={instructor.name}
                 fill
                 priority
                 className="object-cover"
-                sizes="(max-width: 1024px) 100vw, 40vw"
+                sizes="(max-width: 1024px) 80vw, 36vw"
               />
-              <div className="absolute inset-0 bg-gradient-to-t from-ink-900/60 via-transparent" />
-              <div className="absolute bottom-5 left-5 right-5">
-                <p className="text-xs font-semibold uppercase tracking-wider text-brand-300">Currently</p>
-                <p className="font-display font-bold text-lg mt-0.5 leading-tight">
+              <div className="absolute inset-0 bg-gradient-to-t from-ink-950/70 via-transparent" />
+              <div className="absolute bottom-4 left-4 right-4">
+                <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-brand-300">Currently</p>
+                <p className="font-display font-bold text-base mt-0.5 leading-tight">
                   {instructor.currentRole} · {instructor.currentCompany}
                 </p>
               </div>
             </div>
           </Reveal>
 
-          {/* Bio block */}
-          <div className="lg:col-span-7">
+          {/* Right column — name, title, condensed bio, stat strip, companies */}
+          <div className="lg:col-span-7 space-y-5">
             <Reveal delay={0.04}>
-              <h3 className="text-white text-3xl sm:text-4xl font-display font-bold leading-tight">
-                {instructor.name}
-              </h3>
+              <div>
+                <h3 className="text-white text-2xl sm:text-3xl font-display font-bold leading-tight">
+                  {instructor.name}
+                </h3>
+                <p className="mt-1 text-brand-300 font-medium text-sm sm:text-base">
+                  {instructor.title}
+                </p>
+              </div>
             </Reveal>
+
+            {/* Bio — single paragraph, compact */}
             <Reveal delay={0.08}>
-              <p className="mt-2 text-brand-300 font-medium">{instructor.title}</p>
+              <p className="text-ink-200 text-sm sm:text-base leading-relaxed max-w-2xl line-clamp-5">
+                {instructor.longBio}
+              </p>
             </Reveal>
 
-            {/* Bio paragraph — split for readability */}
+            {/* Stat strip — horizontal pill row with dividers */}
             <Reveal delay={0.12}>
-              <div className="mt-6 space-y-4 text-ink-200 text-base sm:text-lg leading-relaxed max-w-2xl">
-                {instructor.longBio.split('. ').reduce<string[]>((acc, sentence, i, arr) => {
-                  // Split into two paragraphs at the midpoint sentence boundary
-                  const idx = Math.ceil(arr.length / 2);
-                  if (i < idx) acc[0] = (acc[0] ? acc[0] + '. ' : '') + sentence;
-                  else acc[1] = (acc[1] ? acc[1] + '. ' : '') + sentence;
-                  return acc;
-                }, ['', '']).filter(Boolean).map((p, i) => (
-                  <p key={i}>{p.trim()}{p.trim().endsWith('.') ? '' : '.'}</p>
-                ))}
-              </div>
+              <dl className="flex flex-wrap items-stretch gap-y-3 rounded-2xl bg-white/5 ring-1 ring-white/10 backdrop-blur px-5 py-4">
+                <StatItem label="Years" value={`${instructor.yearsExperience}+`} />
+                <Divider />
+                <StatItem label="Based in" value={instructor.location} />
+                <Divider />
+                <StatItem label="Specialization" value={instructor.specialization} flexible />
+              </dl>
             </Reveal>
 
-            {/* Stat grid */}
+            {/* Education — single line */}
             <Reveal delay={0.16}>
-              <div className="mt-8 grid grid-cols-2 sm:grid-cols-3 gap-3">
-                <Stat icon={<Briefcase className="w-4 h-4" />} label="Years experience" value={`${instructor.yearsExperience}+`} />
-                <Stat icon={<Briefcase className="w-4 h-4" />} label="Current role" value={instructor.currentCompany} />
-                <Stat icon={<MapPin className="w-4 h-4" />} label="Based in" value={instructor.location} />
-              </div>
-            </Reveal>
-
-            {/* Education + Specialization */}
-            <Reveal delay={0.2}>
-              <div className="mt-6 grid sm:grid-cols-2 gap-3">
-                <InfoRow Icon={GraduationCap} label="Education" value={instructor.education} />
-                <InfoRow Icon={FileCheck2} label="Specialization" value={instructor.specialization} />
-              </div>
+              <p className="text-sm text-ink-300">
+                <span className="text-ink-500 uppercase tracking-[0.18em] text-xs font-semibold mr-2">
+                  Education
+                </span>
+                <span className="text-white">{instructor.education}</span>
+              </p>
             </Reveal>
 
             {/* Past companies */}
             {instructor.pastCompanies.length > 0 && (
-              <Reveal delay={0.24}>
-                <div className="mt-8">
-                  <p className="text-xs font-semibold uppercase tracking-wider text-ink-400 mb-3">Worked across</p>
-                  <div className="flex flex-wrap gap-2">
-                    {instructor.pastCompanies.map(c => (
-                      <span key={c} className="inline-flex items-center px-3 py-1.5 rounded-full bg-white/10 text-white text-sm font-medium ring-1 ring-white/15">
-                        {c}
-                      </span>
-                    ))}
-                  </div>
+              <Reveal delay={0.2}>
+                <div className="flex flex-wrap items-center gap-2">
+                  <span className="text-xs font-semibold uppercase tracking-[0.18em] text-ink-500 mr-1">
+                    Worked across
+                  </span>
+                  {instructor.pastCompanies.map((c) => (
+                    <span
+                      key={c}
+                      className="inline-flex items-center px-2.5 py-1 rounded-full bg-white/10 text-white text-xs font-medium ring-1 ring-white/15"
+                    >
+                      {c}
+                    </span>
+                  ))}
                 </div>
               </Reveal>
             )}
@@ -111,28 +120,17 @@ export function InstructorSection({ instructor }: { instructor: Instructor }) {
   );
 }
 
-function Stat({ icon, label, value }: { icon: React.ReactNode; label: string; value: string }) {
+function StatItem({ label, value, flexible }: { label: string; value: string; flexible?: boolean }) {
   return (
-    <div className="rounded-2xl bg-white/5 ring-1 ring-white/10 backdrop-blur p-4">
-      <div className="flex items-center gap-2 text-brand-300">
-        {icon}
-        <p className="text-xs font-medium uppercase tracking-wider">{label}</p>
-      </div>
-      <p className="mt-2 font-display text-2xl sm:text-3xl font-bold text-white tabular-nums">{value}</p>
+    <div className={flexible ? 'flex-1 min-w-[7rem]' : 'min-w-[6rem]'}>
+      <dt className="text-[10px] font-semibold uppercase tracking-[0.18em] text-ink-400">{label}</dt>
+      <dd className="mt-0.5 font-display text-base sm:text-lg font-bold text-white leading-tight">
+        {value}
+      </dd>
     </div>
   );
 }
 
-function InfoRow({ Icon, label, value }: { Icon: React.ComponentType<{ className?: string }>; label: string; value: string }) {
-  return (
-    <div className="rounded-2xl bg-white/5 ring-1 ring-white/10 p-4 flex items-start gap-3">
-      <span className="w-9 h-9 flex-shrink-0 rounded-xl bg-brand-600/20 text-brand-300 grid place-items-center">
-        <Icon className="w-4 h-4" />
-      </span>
-      <div className="min-w-0">
-        <p className="text-xs font-medium uppercase tracking-wider text-ink-400">{label}</p>
-        <p className="mt-0.5 text-sm text-white leading-snug">{value}</p>
-      </div>
-    </div>
-  );
+function Divider() {
+  return <span className="w-px self-stretch bg-white/10 mx-4 sm:mx-5" aria-hidden />;
 }

@@ -24,11 +24,8 @@ export function AdminSidebar({ profile, onClose }: { profile: Profile; onClose?:
     <div className="flex flex-col h-full">
       <div className="px-5 py-5 border-b border-white/10 hidden lg:block">
         <Link href="/admin/dashboard" className="flex items-center gap-2.5">
-          <span className="w-9 h-9 rounded-xl bg-brand-600 grid place-items-center shadow-soft">
-            <svg viewBox="0 0 24 24" className="w-5 h-5 text-white" fill="none" stroke="currentColor" strokeWidth={2.5}>
-              <path d="M12 2 L4 7 L12 12 L20 7 Z" /><path d="M4 12 L12 17 L20 12" />
-            </svg>
-          </span>
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img src="/favicon.jpg" alt="" className="w-9 h-9 rounded-lg" />
           <span className="font-display font-bold text-lg">Avenir <span className="text-brand-400">Admin</span></span>
         </Link>
       </div>

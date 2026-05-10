@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { Play, FileText, GraduationCap, Sparkles } from 'lucide-react';
+import { Play, FileText, GraduationCap, ArrowUpRight, BookmarkCheck } from 'lucide-react';
 import { fetchAllCourses } from '@/lib/db/courses';
 import { fetchAllJobs } from '@/lib/db/jobs';
 import { fetchEnrolledCourseSlugs, fetchLearningStatus } from '@/lib/db/progress';
@@ -90,7 +90,7 @@ export default async function DashboardPage() {
                       <span className="absolute top-3 left-3 badge bg-white/15 text-white ring-1 ring-white/30 backdrop-blur">{c.duration}</span>
                       {addedForYou && (
                         <span className="absolute top-3 right-3 badge bg-accent-500 text-white ring-1 ring-white/30 backdrop-blur inline-flex items-center gap-1">
-                          <Sparkles className="w-3 h-3" /> Added for you
+                          <BookmarkCheck className="w-3 h-3" strokeWidth={2.4} /> Added for you
                         </span>
                       )}
                       <div className="absolute inset-0 grid place-items-center">
@@ -146,7 +146,7 @@ export default async function DashboardPage() {
         <div className="lg:col-span-5 space-y-4">
           <Reveal as="div">
             <Link href="/apply" className="card card-pad card-hover flex items-start gap-4 ring-1 ring-brand-100 bg-brand-50/40">
-              <span className="w-12 h-12 rounded-xl bg-brand-600 text-white grid place-items-center flex-shrink-0"><Sparkles className="w-6 h-6" /></span>
+              <span className="w-12 h-12 rounded-xl bg-brand-600 text-white grid place-items-center flex-shrink-0"><ArrowUpRight className="w-6 h-6" strokeWidth={2.2} /></span>
               <div className="min-w-0">
                 <p className="font-semibold text-ink-900">Apply for another course</p>
                 <p className="mt-1 text-sm text-ink-600">Add another track to your account — your details are already filled in. Admin will reach out within 24 hours.</p>
