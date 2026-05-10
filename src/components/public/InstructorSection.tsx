@@ -26,7 +26,6 @@ export function InstructorSection({ instructor }: { instructor: Instructor }) {
         </div>
 
         <div className="grid lg:grid-cols-12 gap-10 lg:gap-12 items-start">
-          {/* Photo + floating cards */}
           <Reveal className="lg:col-span-5 relative">
             <div className="relative aspect-[4/5] rounded-3xl overflow-hidden shadow-soft-xl ring-1 ring-white/10">
               <Image
@@ -43,32 +42,6 @@ export function InstructorSection({ instructor }: { instructor: Instructor }) {
                 <p className="font-display font-bold text-lg mt-0.5 leading-tight">
                   {instructor.currentRole} · {instructor.currentCompany}
                 </p>
-              </div>
-            </div>
-
-            {/* Floating chip — top */}
-            <div className="hidden sm:block absolute -top-4 -left-4 bg-white text-ink-900 rounded-2xl shadow-soft-lg p-4 max-w-[220px]">
-              <div className="flex items-center gap-3">
-                <span className="w-10 h-10 rounded-xl bg-brand-50 grid place-items-center text-brand-700">
-                  <FileCheck2 className="w-5 h-5" />
-                </span>
-                <div>
-                  <p className="text-xs text-ink-500">Submission types</p>
-                  <p className="text-sm font-semibold leading-tight">NDS · SNDS · IND · NDA · BLA</p>
-                </div>
-              </div>
-            </div>
-
-            {/* Floating chip — bottom */}
-            <div className="hidden sm:block absolute -bottom-4 -right-4 bg-white text-ink-900 rounded-2xl shadow-soft-lg p-4 max-w-[220px]">
-              <div className="flex items-center gap-3">
-                <span className="w-10 h-10 rounded-xl bg-accent-50 grid place-items-center text-accent-700">
-                  <GraduationCap className="w-5 h-5" />
-                </span>
-                <div>
-                  <p className="text-xs text-ink-500">MSc</p>
-                  <p className="text-sm font-semibold leading-tight">Northeastern University</p>
-                </div>
               </div>
             </div>
           </Reveal>

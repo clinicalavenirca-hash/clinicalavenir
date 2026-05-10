@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { ArrowRight, Calendar, ShieldCheck, Briefcase, FileText, GraduationCap, Kanban, Award, MessageCircle, Quote } from 'lucide-react';
+import { ArrowRight, Calendar, Briefcase, FileText, GraduationCap, Kanban, Award, MessageCircle, Quote } from 'lucide-react';
 import { fetchCourses } from '@/lib/db/courses';
 import { fetchInstructor } from '@/lib/db/instructor';
 import { fetchStories } from '@/lib/db/stories';
@@ -68,21 +68,6 @@ export default async function HomePage() {
                     <span className="badge-accent text-xs">8 seats left</span>
                   </div>
                 </div>
-              </div>
-              <div className="absolute -top-4 -left-4 sm:-top-6 sm:-left-6 bg-white rounded-2xl shadow-soft-lg p-4 max-w-[220px]">
-                <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-xl bg-emerald-50 grid place-items-center text-emerald-700">
-                    <ShieldCheck className="w-5 h-5" />
-                  </div>
-                  <div>
-                    <p className="text-sm font-semibold text-ink-900">Job-ready certificate</p>
-                    <p className="text-xs text-ink-500">on completion</p>
-                  </div>
-                </div>
-              </div>
-              <div className="absolute -bottom-4 -right-2 sm:-bottom-6 sm:-right-6 bg-white rounded-2xl shadow-soft-lg p-4 max-w-[240px]">
-                <p className="text-xs font-semibold uppercase tracking-wider text-brand-700">Live + recorded</p>
-                <p className="text-sm text-ink-900 mt-1 leading-snug">Every session is recorded and added to your dashboard within 24 hrs.</p>
               </div>
             </Reveal>
           </div>
