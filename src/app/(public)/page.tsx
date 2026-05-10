@@ -24,11 +24,11 @@ export default async function HomePage() {
       <StoriesRealtime />
       {/* Hero */}
       <section className="hero-gradient relative overflow-hidden">
-        <div className="container-app py-16 sm:py-20 lg:py-28">
-          <div className="grid lg:grid-cols-12 gap-10 lg:gap-12 items-center">
+        <div className="container-app pt-8 pb-16 sm:pt-10 sm:pb-20 lg:pt-14 lg:pb-28">
+          <div className="grid lg:grid-cols-12 gap-10 lg:gap-12 items-start">
             <div className="lg:col-span-7">
               <Reveal><span className="eyebrow">For pharmacy & life-sciences graduates</span></Reveal>
-              <Reveal delay={0.04}><h1 className="mt-4">Land your first regulated role in <span className="text-brand-700">Canada</span> — with the program that actually trains you to do the job.</h1></Reveal>
+              <Reveal delay={0.04}><h1 className="mt-4">Launch your career in <span className="text-brand-700">life sciences</span>.</h1></Reveal>
               <Reveal delay={0.08}><p className="mt-5 text-lg text-ink-600 max-w-2xl leading-relaxed">Pharmacovigilance, Regulatory Affairs, Clinical Research, Clinical Data Management — taught live by industry leads, paired with a job board, resume tools, and interview prep that grow with you.</p></Reveal>
               <Reveal delay={0.12}>
                 <div className="mt-7 flex flex-wrap gap-3">
