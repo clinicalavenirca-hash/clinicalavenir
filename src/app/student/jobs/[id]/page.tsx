@@ -115,6 +115,30 @@ export default async function JobDetailPage({ params }: { params: { id: string }
                 </>
               )}
             </div>
+            {/* AI assistant shortcuts — drive to /student/ai-assistant with the JD pre-filled */}
+            <div className="card card-pad bg-ink-950 text-white ring-1 ring-white/10">
+              <p className="text-[10px] font-semibold tracking-[0.22em] uppercase text-accent-400">AI assistant</p>
+              <p className="mt-2 text-sm text-ink-200 leading-relaxed">
+                Tailor your resume or draft a cover letter against this exact job — JD is pre-filled.
+              </p>
+              <div className="mt-4 flex flex-col gap-2">
+                <Link
+                  href={`/student/ai-assistant?job=${job.id}&mode=tailor`}
+                  className="inline-flex items-center justify-between gap-2 px-3 py-2 rounded-lg bg-white/10 text-sm font-medium hover:bg-white/20 transition-colors"
+                >
+                  Tailor my resume
+                  <span aria-hidden>→</span>
+                </Link>
+                <Link
+                  href={`/student/ai-assistant?job=${job.id}&mode=cover`}
+                  className="inline-flex items-center justify-between gap-2 px-3 py-2 rounded-lg bg-white/10 text-sm font-medium hover:bg-white/20 transition-colors"
+                >
+                  Draft a cover letter
+                  <span aria-hidden>→</span>
+                </Link>
+              </div>
+            </div>
+
             <div className="card card-pad">
               <p className="font-semibold text-ink-900">Why you might match</p>
               <ul className="mt-3 space-y-2 text-sm text-ink-700">

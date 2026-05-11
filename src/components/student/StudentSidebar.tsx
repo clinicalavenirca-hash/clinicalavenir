@@ -1,7 +1,7 @@
 'use client';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { LayoutDashboard, BookOpen, GraduationCap, Briefcase, Kanban, FileText, User, LogOut } from 'lucide-react';
+import { LayoutDashboard, BookOpen, GraduationCap, Briefcase, Kanban, FileText, User, LogOut, BrainCircuit } from 'lucide-react';
 import type { Profile } from '@/lib/data';
 import { Avatar } from '@/components/ui/Avatar';
 import { signOut } from '@/app/actions/auth';
@@ -16,7 +16,8 @@ const links = [
   { group: 'Career', items: [
     { href: '/student/jobs',          label: 'Job Board',     Icon: Briefcase },
     { href: '/student/applications',  label: 'Tracker',       Icon: Kanban },
-    { href: '/student/resume',        label: 'Resume Builder',Icon: FileText }
+    { href: '/student/resume',        label: 'Resume Builder',Icon: FileText },
+    { href: '/student/ai-assistant',  label: 'AI Assistant',  Icon: BrainCircuit }
   ]},
   { group: 'Account', items: [
     { href: '/student/profile',       label: 'Profile',       Icon: User }
