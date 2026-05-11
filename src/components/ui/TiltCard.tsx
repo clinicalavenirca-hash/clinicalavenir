@@ -32,7 +32,7 @@ export function TiltCard({
   const spotlight = useTransform(
     [sx, sy],
     ([x, y]: number[]) =>
-      `radial-gradient(circle at ${x}% ${y}%, rgba(99,102,241,0.18), transparent 50%)`
+      `radial-gradient(circle at ${x}% ${y}%, rgba(242,92,66,0.18), transparent 50%)`
   );
 
   function onMove(e: React.PointerEvent) {

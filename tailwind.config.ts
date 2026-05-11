@@ -7,11 +7,13 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        // Indigo / electric cobalt — replaces teal. Serious + modern + not AI-template.
+        // Warm taupe / editorial neutral — replaces indigo. Pairs with coral
+        // accent without competing for chromatic attention. Brand is now an
+        // earth-toned counterpart to cool ink.
         brand: {
-          50:  '#EEF2FF', 100: '#E0E7FF', 200: '#C7D2FE', 300: '#A5B4FC',
-          400: '#818CF8', 500: '#6366F1', 600: '#4F46E5', 700: '#4338CA',
-          800: '#3730A3', 900: '#312E81', 950: '#1E1B4B'
+          50:  '#FAF7F2', 100: '#F1EBE0', 200: '#E0D5C2', 300: '#C7B59A',
+          400: '#A89071', 500: '#876D52', 600: '#6B543E', 700: '#503F2D',
+          800: '#382B1F', 900: '#221A13', 950: '#120D08'
         },
         // Warm coral / terracotta — replaces amber. Editorial warmth against the indigo.
         accent: {
@@ -44,8 +46,8 @@ const config: Config = {
         'soft-xl':'0 25px 50px -12px rgba(15,23,42,.12)',
         // Inset highlight for dark editorial cards
         'inset-hi': 'inset 0 1px 0 0 rgba(255,255,255,0.08)',
-        // Cobalt glow for primary CTA on hover
-        'glow-brand': '0 0 0 1px rgba(99,102,241,0.4), 0 8px 24px -4px rgba(79,70,229,0.5)'
+        // Warm earth ring + slight indigo glow for primary CTA hover (keeps the blue glint the user liked)
+        'glow-brand': '0 0 0 1px rgba(135,109,82,0.4), 0 8px 24px -4px rgba(99,102,241,0.45)'
       },
       keyframes: {
         'fade-in':   { '0%': { opacity: '0' }, '100%': { opacity: '1' } },

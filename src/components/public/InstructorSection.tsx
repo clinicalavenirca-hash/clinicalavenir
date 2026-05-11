@@ -4,17 +4,21 @@ import { Reveal } from '@/components/ui/Reveal';
 
 /**
  * Instructor introduction. Compact two-column layout — photo capped at a
- * fixed max-height on the left, bio + tight stat strip on the right. The
- * full bio is shown but constrained in font size so the section fits
- * within a single viewport on a typical laptop screen.
+ * fixed max-height on the left, bio + tight stat strip on the right.
+ *
+ * The bio is rendered with the instructor's first name stripped from the
+ * leading word so the paragraph doesn't open with "Gopal" right after the
+ * heading already shows "Gopal Chelikani" — reads like continuous prose
+ * instead of an external explainer.
  */
 export function InstructorSection({ instructor }: { instructor: Instructor }) {
+  const bio = stripLeadingName(instructor.longBio, instructor.name);
   return (
     <section className="py-12 sm:py-16 lg:py-20 bg-ink-950 text-white relative overflow-hidden">
       {/* Soft decorative glows */}
       <div className="absolute inset-0 opacity-25 pointer-events-none">
-        <div className="absolute -top-32 -right-32 w-80 h-80 rounded-full bg-brand-600 blur-3xl" />
-        <div className="absolute -bottom-32 -left-32 w-80 h-80 rounded-full bg-accent-600 blur-3xl" />
+        <div className="absolute -top-32 -right-32 w-80 h-80 rounded-full bg-accent-600 blur-3xl" />
+        <div className="absolute -bottom-32 -left-32 w-80 h-80 rounded-full bg-accent-500 blur-3xl" />
       </div>
 
       <div className="container-app relative">
@@ -22,11 +26,11 @@ export function InstructorSection({ instructor }: { instructor: Instructor }) {
         <div className="mb-8 lg:mb-10 flex items-baseline justify-between flex-wrap gap-3">
           <div>
             <Reveal>
-              <span className="eyebrow !text-brand-400">Meet your instructor</span>
+              <span className="eyebrow !text-accent-400">Meet your instructor</span>
             </Reveal>
             <Reveal delay={0.04}>
               <h2 className="mt-2 text-white text-2xl sm:text-3xl lg:text-4xl">
-                Real practitioner. Weekly office hours.
+                From the <span className="font-serif italic font-normal text-accent-400">field</span>.
               </h2>
             </Reveal>
           </div>
@@ -44,13 +48,6 @@ export function InstructorSection({ instructor }: { instructor: Instructor }) {
                 className="object-cover"
                 sizes="(max-width: 1024px) 80vw, 36vw"
               />
-              <div className="absolute inset-0 bg-gradient-to-t from-ink-950/70 via-transparent" />
-              <div className="absolute bottom-4 left-4 right-4">
-                <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-brand-300">Currently</p>
-                <p className="font-display font-bold text-base mt-0.5 leading-tight">
-                  {instructor.currentRole} · {instructor.currentCompany}
-                </p>
-              </div>
             </div>
           </Reveal>
 
@@ -61,16 +58,17 @@ export function InstructorSection({ instructor }: { instructor: Instructor }) {
                 <h3 className="text-white text-2xl sm:text-3xl font-display font-bold leading-tight">
                   {instructor.name}
                 </h3>
-                <p className="mt-1 text-brand-300 font-medium text-sm sm:text-base">
+                <p className="mt-1 text-accent-400 font-medium text-sm sm:text-base">
                   {instructor.title}
                 </p>
               </div>
             </Reveal>
 
-            {/* Bio — single paragraph, compact */}
+            {/* Bio — single paragraph, compact. First name stripped so the
+                paragraph reads as continuation of the heading above. */}
             <Reveal delay={0.08}>
               <p className="text-ink-200 text-sm sm:text-base leading-relaxed max-w-2xl line-clamp-5">
-                {instructor.longBio}
+                {bio}
               </p>
             </Reveal>
 
@@ -133,4 +131,23 @@ function StatItem({ label, value, flexible }: { label: string; value: string; fl
 
 function Divider() {
   return <span className="w-px self-stretch bg-white/10 mx-4 sm:mx-5" aria-hidden />;
+}
+
+/**
+ * Strip a leading instance of the instructor's first name from the bio so
+ * the paragraph doesn't restart with the name that the heading above
+ * already shows. "Gopal has spent the last 15 years…" → "Has spent the
+ * last 15 years…". Capitalizes the new opening character so it still
+ * reads as a proper sentence. Returns the bio unchanged if it doesn't
+ * begin with the first name.
+ */
+function stripLeadingName(bio: string, fullName: string): string {
+  if (!bio || !fullName) return bio;
+  const firstName = fullName.split(' ')[0];
+  if (!firstName) return bio;
+  if (bio.startsWith(`${firstName} `)) {
+    const rest = bio.slice(firstName.length + 1);
+    return rest.charAt(0).toUpperCase() + rest.slice(1);
+  }
+  return bio;
 }

@@ -33,7 +33,7 @@ export async function Footer() {
           <div className="lg:col-span-3">
             <h4 className="text-white text-xs font-semibold tracking-[0.18em] uppercase mb-5">Programs</h4>
             <ul className="space-y-3 text-sm">
-              {courses.slice(0, 4).map((c) => (
+              {courses.map((c) => (
                 <li key={c.id}>
                   <Link href={`/courses/${c.slug}`} className="text-ink-400 hover:text-white transition-colors">
                     {c.title}

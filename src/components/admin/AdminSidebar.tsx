@@ -1,7 +1,7 @@
 'use client';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { LayoutGrid, Inbox, Users, BookOpen, Briefcase, Quote, LogOut } from 'lucide-react';
+import { LayoutGrid, Inbox, Users, BookOpen, Briefcase, Quote, MessageSquare, LogOut } from 'lucide-react';
 import type { Profile } from '@/lib/data';
 import { signOut } from '@/app/actions/auth';
 import { initials, cn } from '@/lib/utils';
@@ -9,6 +9,7 @@ import { initials, cn } from '@/lib/utils';
 const links = [
   { href: '/admin/dashboard',    label: 'Overview',     Icon: LayoutGrid },
   { href: '/admin/applications', label: 'Applications', Icon: Inbox },
+  { href: '/admin/messages',     label: 'Messages',     Icon: MessageSquare },
   { href: '/admin/students',     label: 'Students',     Icon: Users }
 ];
 const catalog = [

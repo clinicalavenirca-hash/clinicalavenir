@@ -15,7 +15,7 @@ export function TrustMarquee() {
         <p className="text-center text-xs uppercase tracking-[0.18em] font-semibold text-ink-500 mb-5">
           Graduates placed at
         </p>
-        <div className="overflow-hidden">
+        <div className="relative overflow-hidden">
           <ul className="marquee-track">
             {[...COMPANIES, ...COMPANIES].map((c, i) => (
               <li
@@ -26,6 +26,16 @@ export function TrustMarquee() {
               </li>
             ))}
           </ul>
+          {/* Tight edge gradients hide partial words sliding past the container edges
+              without dimming the fully visible names in the middle. */}
+          <span
+            aria-hidden
+            className="pointer-events-none absolute inset-y-0 left-0 w-12 sm:w-16 bg-gradient-to-r from-white via-white/90 to-transparent"
+          />
+          <span
+            aria-hidden
+            className="pointer-events-none absolute inset-y-0 right-0 w-12 sm:w-16 bg-gradient-to-l from-white via-white/90 to-transparent"
+          />
         </div>
       </div>
     </section>

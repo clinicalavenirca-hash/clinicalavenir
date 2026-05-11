@@ -43,13 +43,13 @@ export default async function CourseDetailPage({ params }: { params: { slug: str
             <Reveal delay={0.1} className="lg:col-span-4 glass rounded-2xl p-5 text-ink-900">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-xs font-semibold uppercase tracking-wider text-brand-700">Batch starts</p>
-                  <p className="font-display text-xl font-bold mt-0.5">{course.cohortStart ? formatDate(course.cohortStart, { month: 'long', day: 'numeric' }) : 'TBD'}</p>
+                  <p className="text-[10px] font-semibold tracking-[0.22em] uppercase text-ink-500">Batch starts</p>
+                  <p className="font-display text-xl font-bold mt-0.5 text-ink-950">{course.cohortStart ? formatDate(course.cohortStart, { month: 'long', day: 'numeric' }) : 'TBD'}</p>
                 </div>
                 <span className="badge-accent text-xs">{course.seatsRemaining} / {course.totalSeats} seats</span>
               </div>
               <div className="mt-3 h-1.5 rounded-full bg-ink-100 overflow-hidden">
-                <div className="h-full bg-gradient-to-r from-brand-500 to-brand-700" style={{ width: `${fill}%` }} />
+                <div className="h-full bg-gradient-to-r from-accent-400 to-accent-600" style={{ width: `${fill}%` }} />
               </div>
               {canApply ? (
                 <Link href={`/apply?course=${course.slug}`} className="mt-4 btn-primary btn-md w-full justify-center">Apply for this batch</Link>
@@ -80,7 +80,7 @@ export default async function CourseDetailPage({ params }: { params: { slug: str
               <ul className="mt-6 grid sm:grid-cols-2 gap-3">
                 {course.whatYouWillLearn.map(item => (
                   <li key={item} className="flex gap-3 p-4 rounded-xl bg-ink-50 border border-ink-100">
-                    <span className="mt-0.5 w-6 h-6 flex-shrink-0 rounded-full bg-brand-600 text-white grid place-items-center"><Check className="w-3.5 h-3.5" strokeWidth={3} /></span>
+                    <span className="mt-0.5 w-6 h-6 flex-shrink-0 rounded-full bg-emerald-600 text-white grid place-items-center"><Check className="w-3.5 h-3.5" strokeWidth={3} /></span>
                     <span className="text-ink-800 text-sm leading-relaxed">{item}</span>
                   </li>
                 ))}
@@ -129,7 +129,7 @@ export default async function CourseDetailPage({ params }: { params: { slug: str
                     'Resume builder + interview prep'
                   ].map(b => (
                     <li key={b} className="flex gap-3">
-                      <Check className="w-5 h-5 text-brand-600 flex-shrink-0" strokeWidth={2.5} />
+                      <Check className="w-5 h-5 text-emerald-600 flex-shrink-0" strokeWidth={2.5} />
                       <span className="text-ink-700">{b}</span>
                     </li>
                   ))}

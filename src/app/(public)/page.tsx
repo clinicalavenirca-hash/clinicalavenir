@@ -8,6 +8,7 @@ import { fetchCourses } from '@/lib/db/courses';
 import { fetchInstructor } from '@/lib/db/instructor';
 import { fetchStories } from '@/lib/db/stories';
 import { Reveal } from '@/components/ui/Reveal';
+import { spellCount } from '@/lib/utils';
 import { Avatar } from '@/components/ui/Avatar';
 import { CoursesRealtime } from '@/components/realtime/CoursesRealtime';
 import { StoriesRealtime } from '@/components/realtime/StoriesRealtime';
@@ -53,7 +54,7 @@ export default async function HomePage() {
         <div className="container-app">
           <div className="grid lg:grid-cols-12 gap-10 lg:gap-16 mb-12 sm:mb-16 items-end">
             <div className="lg:col-span-7">
-              <p className="eyebrow">Four tracks</p>
+              <p className="eyebrow">{spellCount(courses.length)} {courses.length === 1 ? 'track' : 'tracks'}</p>
               <RevealHeading
                 as="h2"
                 text="Pick a discipline. We do the rest."
@@ -74,6 +75,7 @@ export default async function HomePage() {
                 <ProgramCard
                   index={i + 1}
                   href={`/courses/${c.slug}`}
+                  cover={c.cover}
                   tagline={c.tagline}
                   title={c.title}
                   blurb={c.shortDescription}

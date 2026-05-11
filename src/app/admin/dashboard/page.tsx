@@ -78,7 +78,7 @@ export default async function AdminDashboardPage() {
     { label: 'New applications', value: newApps,                                   hint: 'Need first contact', tone: 'bg-accent-50 text-accent-700', Icon: Inbox },
     { label: 'Active students',  value: `${activeStudents} / ${totalStudents}`,    hint: 'Active vs total',    tone: 'bg-brand-50 text-brand-700',   Icon: Users },
     { label: 'Live jobs',        value: liveJobs,                                  hint: 'Open right now',     tone: 'bg-emerald-50 text-emerald-700',Icon: Briefcase },
-    { label: 'Videos uploaded',  value: totalVideos,                               hint: 'Across all courses', tone: 'bg-indigo-50 text-indigo-700', Icon: Video }
+    { label: 'Videos uploaded',  value: totalVideos,                               hint: 'Across all courses', tone: 'bg-brand-50 text-brand-700', Icon: Video }
   ];
 
   const toneFor = (s: string): Tone =>
@@ -163,7 +163,7 @@ export default async function AdminDashboardPage() {
           </Reveal>
           <Reveal as="div" delay={0.1}>
             <Link href="/admin/jobs/new" className="card card-pad card-hover flex items-start gap-4">
-              <span className="w-12 h-12 rounded-xl bg-indigo-50 text-indigo-700 grid place-items-center flex-shrink-0"><Activity className="w-6 h-6" /></span>
+              <span className="w-12 h-12 rounded-xl bg-brand-50 text-brand-700 grid place-items-center flex-shrink-0"><Activity className="w-6 h-6" /></span>
               <div className="min-w-0">
                 <p className="font-semibold text-ink-900">Post a new role</p>
                 <p className="mt-1 text-sm text-ink-600">Tag it to a course and only relevant students see it.</p>

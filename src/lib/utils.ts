@@ -87,6 +87,19 @@ export function formatSalaryRange(min: number | null | undefined, max: number | 
   return '';
 }
 
+/**
+ * Spell small counts in title-case ("One", "Two", "Four") for use in eyebrow
+ * labels like "Four tracks". Falls back to the digit string for >12 so we
+ * don't end up with awkward word-counts.
+ */
+const NUMBER_WORDS = [
+  'Zero', 'One', 'Two', 'Three', 'Four', 'Five', 'Six',
+  'Seven', 'Eight', 'Nine', 'Ten', 'Eleven', 'Twelve'
+];
+export function spellCount(n: number): string {
+  return NUMBER_WORDS[n] ?? String(n);
+}
+
 export function initials(name: string, max = 2) {
   return name
     .split(' ')

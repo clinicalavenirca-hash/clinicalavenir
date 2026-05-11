@@ -18,9 +18,9 @@ export function toast(message: string, type: Toast['type'] = 'info') {
  * variant which read as too "clinical" against the indigo/coral brand.
  */
 const dotMap = {
-  success: 'bg-accent-500',
+  success: 'bg-emerald-400',
   error:   'bg-rose-500',
-  info:    'bg-brand-400',
+  info:    'bg-brand-300',
   warning: 'bg-amber-400'
 } as const;
 
