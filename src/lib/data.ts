@@ -95,6 +95,31 @@ export type FaqRow = {
   category: string | null;
   orderIndex: number;
 };
+
+/** Interview prep — admin-managed topics under a course. */
+export type InterviewTopic = {
+  id: string;
+  courseId: string;
+  label: string;
+  orderIndex: number;
+};
+
+/** Interview prep — a question under a topic, with the model answer. */
+export type InterviewQuestionRow = {
+  id: string;
+  topicId: string;
+  question: string;
+  answer: string;
+  difficulty: 'beginner' | 'intermediate' | 'advanced';
+  orderIndex: number;
+};
+
+/** Student's bookmarked question with an optional personal note. */
+export type InterviewBookmark = {
+  questionId: string;
+  note: string | null;
+  createdAt: string;
+};
 export type InterviewQuestion = { topic: string; question: string; answer: string };
 
 export type Application = {
