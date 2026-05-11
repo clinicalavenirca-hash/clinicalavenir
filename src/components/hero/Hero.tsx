@@ -70,6 +70,18 @@ export function Hero({ stories, nextCourse }: Props) {
               </span>
             </h1>
 
+            {/* Mobile-only image — sits between heading and sub paragraph
+                so the visual order on small screens is heading → image → sub */}
+            <div className="lg:hidden mt-8 flex justify-center">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src="/Untitled.png"
+                alt=""
+                data-hero="image"
+                className="w-full max-w-xs sm:max-w-sm h-auto object-contain block"
+              />
+            </div>
+
             <p data-hero="sub" className="mt-6 max-w-xl text-base sm:text-lg text-ink-600 leading-relaxed">
               Live cohorts in Pharmacovigilance, Regulatory Affairs, Clinical Research, and Clinical Data Management — paired with a job board, resume tools, and interview prep for the Canadian market.
             </p>
@@ -130,15 +142,15 @@ export function Hero({ stories, nextCourse }: Props) {
             )}
           </div>
 
-          {/* RIGHT — transparent PNG. Constrained width on mobile/tablet so
-              it never overflows; oversized on lg+ for the editorial moment. */}
-          <div className="lg:col-span-5 flex items-center justify-center lg:justify-end self-stretch">
+          {/* RIGHT — transparent PNG, lg+ only. Mobile/tablet use the
+              inline image inside the text column for proper visual order. */}
+          <div className="hidden lg:flex lg:col-span-5 items-center justify-end self-stretch">
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
               src="/Untitled.png"
               alt=""
               data-hero="image"
-              className="w-full max-w-xs sm:max-w-sm md:max-w-md lg:max-w-none h-auto object-contain block origin-center lg:scale-[1.35] lg:-translate-y-[6%]"
+              className="w-full h-auto object-contain block origin-center scale-[1.35] -translate-y-[6%]"
             />
           </div>
         </div>
