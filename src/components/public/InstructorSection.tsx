@@ -130,7 +130,7 @@ function StatItem({ label, value, flexible }: { label: string; value: string; fl
 }
 
 function Divider() {
-  return <span className="w-px self-stretch bg-white/10 mx-4 sm:mx-5" aria-hidden />;
+  return <span className="hidden sm:inline-block w-px self-stretch bg-white/10 mx-4 sm:mx-5" aria-hidden />;
 }
 
 /**

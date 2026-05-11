@@ -48,13 +48,13 @@ export default function FAQPage() {
       {/* STATS STRIP — editorial 4-up under the hero */}
       <section className="border-y border-ink-200 bg-white">
         <div className="container-app py-8 sm:py-10">
-          <ul className="grid grid-cols-2 lg:grid-cols-4 gap-y-6 gap-x-8 divide-x divide-ink-200">
+          <ul className="grid grid-cols-2 lg:grid-cols-4 gap-y-6 gap-x-6 sm:gap-x-8 lg:divide-x lg:divide-ink-200">
             {STATS.map((s, i) => (
-              <li key={s.label} className={i === 0 ? 'pl-0' : 'pl-8'}>
-                <p className="font-display font-bold text-ink-950 text-3xl sm:text-4xl tracking-tight tabular-nums">
+              <li key={s.label} className={`lg:pl-8 ${i === 0 ? 'lg:pl-0' : ''}`}>
+                <p className="font-display font-bold text-ink-950 text-2xl sm:text-3xl lg:text-4xl tracking-tight tabular-nums">
                   {s.value}
                 </p>
-                <p className="mt-1 text-xs uppercase tracking-[0.18em] font-semibold text-ink-500">
+                <p className="mt-1 text-[10px] sm:text-xs uppercase tracking-[0.18em] font-semibold text-ink-500">
                   {s.label}
                 </p>
               </li>

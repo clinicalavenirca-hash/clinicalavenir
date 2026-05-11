@@ -130,14 +130,15 @@ export function Hero({ stories, nextCourse }: Props) {
             )}
           </div>
 
-          {/* RIGHT — transparent PNG, no container, larger and centered upward */}
+          {/* RIGHT — transparent PNG. Constrained width on mobile/tablet so
+              it never overflows; oversized on lg+ for the editorial moment. */}
           <div className="lg:col-span-5 flex items-center justify-center lg:justify-end self-stretch">
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
               src="/Untitled.png"
               alt=""
               data-hero="image"
-              className="w-full h-auto object-contain block scale-125 lg:scale-[1.35] origin-center -translate-y-[6%]"
+              className="w-full max-w-xs sm:max-w-sm md:max-w-md lg:max-w-none h-auto object-contain block origin-center lg:scale-[1.35] lg:-translate-y-[6%]"
             />
           </div>
         </div>
