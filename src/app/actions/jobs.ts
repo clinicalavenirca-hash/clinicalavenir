@@ -20,6 +20,8 @@ export type JobInput = {
   description: string;
   qualifications: string[];
   isPublished: boolean;
+  /** External application URL; when set, internal tracking is bypassed. */
+  applyUrl: string | null;
 };
 
 function inputToRow(input: JobInput) {
@@ -40,7 +42,8 @@ function inputToRow(input: JobInput) {
     entry_level_friendly: input.entryLevelFriendly,
     description: input.description,
     qualifications: input.qualifications,
-    is_published: input.isPublished
+    is_published: input.isPublished,
+    apply_url: input.applyUrl?.trim() ? input.applyUrl.trim() : null
   };
 }
 

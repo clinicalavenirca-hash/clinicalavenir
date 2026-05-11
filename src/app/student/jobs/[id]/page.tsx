@@ -1,6 +1,6 @@
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
-import { ArrowLeft, Check } from 'lucide-react';
+import { ArrowLeft, Check, ExternalLink } from 'lucide-react';
 import { fetchJob } from '@/lib/db/jobs';
 import { fetchCourseBySlug } from '@/lib/db/courses';
 import { supabaseServer } from '@/lib/supabase/server';
@@ -16,11 +16,16 @@ export default async function JobDetailPage({ params }: { params: { id: string }
   if (!job) notFound();
   const course = await fetchCourseBySlug(job.courseSlug);
 
+  // Skip the internal-applied lookup entirely for external-link roles —
+  // those bypass the application pipeline.
+  const isExternal = Boolean(job.applyUrl);
   let applied = false;
-  const supa = supabaseServer();
-  if (supa) {
-    const { data } = await supa.from('job_applications').select('id').eq('user_id', me.id).eq('job_id', job.id).maybeSingle();
-    applied = !!data;
+  if (!isExternal) {
+    const supa = supabaseServer();
+    if (supa) {
+      const { data } = await supa.from('job_applications').select('id').eq('user_id', me.id).eq('job_id', job.id).maybeSingle();
+      applied = !!data;
+    }
   }
 
   return (
@@ -83,6 +88,24 @@ export default async function JobDetailPage({ params }: { params: { id: string }
                   <div className="mt-5 px-4 py-2.5 rounded-xl bg-ink-100 text-ink-600 text-center text-sm font-medium">
                     Applications closed
                   </div>
+                </>
+              ) : isExternal ? (
+                <>
+                  <p className="mt-2 text-sm text-ink-600">
+                    {job.company} accepts applications directly on their careers site. Click below — you&apos;ll be redirected and can track this one on your own.
+                  </p>
+                  <a
+                    href={job.applyUrl!}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="mt-5 btn-primary btn-lg w-full justify-center"
+                  >
+                    <ExternalLink className="w-5 h-5" />
+                    Apply on company site
+                  </a>
+                  <p className="mt-3 text-xs text-ink-500 text-center">
+                    Opens in a new tab. Your application stays with {job.company} — not tracked on Avenir.
+                  </p>
                 </>
               ) : (
                 <>

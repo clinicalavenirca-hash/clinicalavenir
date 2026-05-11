@@ -4,6 +4,7 @@ import { ArrowRight, ShoppingCart, X, Loader2, Check } from 'lucide-react';
 import { countries } from '@/lib/countries';
 import { toast } from '@/components/ui/Toast';
 import { submitApplication } from '@/app/actions/applications';
+import { openWhatsApp } from '@/lib/whatsapp';
 
 type CatalogItem = { slug: string; title: string; duration: string; timings: string };
 
@@ -73,6 +74,26 @@ export function ApplyForm({
       if (res?.error) { toast(res.error, 'error'); return; }
       setDone(true);
       toast('Application submitted. Our team will reach out within 24 hours.', 'success');
+
+      // Open WhatsApp with the application details so the user can also
+      // ping admin directly — admin already has the record in the DB.
+      const programLabels = cart
+        .map((slug) => catalog.find((c) => c.slug === slug)?.title ?? slug)
+        .map((t) => `• ${t}`)
+        .join('\n');
+      const waMessage = [
+        '*New course application — Avenir*',
+        '',
+        `*Name:* ${fullName}`,
+        `*Email:* ${email}`,
+        phone ? `*Phone:* ${countryCode} ${phone}` : null,
+        country ? `*Location:* ${[city, country].filter(Boolean).join(', ')}` : null,
+        '',
+        '*Programs applied for:*',
+        programLabels,
+        message ? `\n*Note:* ${message}` : null
+      ].filter(Boolean).join('\n');
+      openWhatsApp(waMessage);
     });
   }
 

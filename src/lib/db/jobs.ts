@@ -21,6 +21,7 @@ type Row = {
   qualifications: string[] | null;
   posted_at: string;
   is_published: boolean;
+  apply_url: string | null;
 };
 
 function rowToJob(r: Row): Job {
@@ -41,7 +42,8 @@ function rowToJob(r: Row): Job {
     entryLevelFriendly: r.entry_level_friendly,
     description: r.description ?? '',
     qualifications: r.qualifications ?? [],
-    postedAt: r.posted_at
+    postedAt: r.posted_at,
+    applyUrl: r.apply_url ?? null
   };
 }
 

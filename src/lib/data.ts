@@ -71,6 +71,9 @@ export type Job = {
   postedAt: string;
   description: string;
   qualifications: string[];
+  /** External application URL. When set, students apply on the company site
+   *  and the internal job_applications flow is bypassed entirely. */
+  applyUrl: string | null;
 };
 
 export type Story = {

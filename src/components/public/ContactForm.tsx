@@ -5,6 +5,7 @@ import { motion } from 'framer-motion';
 import { countries } from '@/lib/countries';
 import { toast } from '@/components/ui/Toast';
 import { submitContactMessage } from '@/app/actions/contactMessages';
+import { openWhatsApp } from '@/lib/whatsapp';
 
 const TOPICS = [
   'Course information',
@@ -47,6 +48,21 @@ export function ContactForm() {
         return;
       }
       setDone(true);
+
+      // Open WhatsApp deep link so the user can ping admin directly in
+      // addition to the message already saved to the DB inbox.
+      const waMessage = [
+        '*New enquiry — Avenir*',
+        '',
+        `*Name:* ${fullName}`,
+        `*Email:* ${email}`,
+        phone ? `*Phone:* ${countryCode} ${phone}` : null,
+        topic ? `*Topic:* ${topic}` : null,
+        '',
+        '*Message:*',
+        message
+      ].filter(Boolean).join('\n');
+      openWhatsApp(waMessage);
     });
   }
 

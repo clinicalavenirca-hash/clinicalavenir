@@ -26,6 +26,7 @@ export function JobEditForm({ job, courses }: { job: Job | null; courses: Course
   const [deadline, setDeadline] = useState(job?.deadline ?? '');
   const [entry, setEntry] = useState(job?.entryLevelFriendly ?? false);
   const [isPublished, setIsPublished] = useState(true);
+  const [applyUrl, setApplyUrl] = useState(job?.applyUrl ?? '');
 
   function buildInput(): JobInput {
     return {
@@ -42,7 +43,8 @@ export function JobEditForm({ job, courses }: { job: Job | null; courses: Course
       salaryPeriod,
       deadline: deadline || null,
       entryLevelFriendly: entry,
-      isPublished
+      isPublished,
+      applyUrl: applyUrl.trim() ? applyUrl.trim() : null
     };
   }
 
@@ -150,6 +152,29 @@ export function JobEditForm({ job, courses }: { job: Job | null; courses: Course
             </div>
             <div className="sm:col-span-2"><label className="label">Application deadline</label><input type="date" className="input" value={deadline} onChange={(e) => setDeadline(e.target.value)} /></div>
           </div>
+        </div>
+
+        <div className="card card-pad">
+          <h3 className="text-lg font-display font-semibold mb-2">Application route</h3>
+          <p className="text-sm text-ink-600 mb-4">
+            Leave the URL empty to use the internal flow — students submit a resume snapshot
+            and admin tracks them through the pipeline. Set a URL to send students directly
+            to the company&apos;s career page; the &quot;Apply&quot; button on the public listing will open
+            that link in a new tab and <strong>no internal application is created</strong>.
+          </p>
+          <label className="label">External application URL <span className="text-ink-400 font-normal">(optional)</span></label>
+          <input
+            type="url"
+            className="input"
+            value={applyUrl}
+            onChange={(e) => setApplyUrl(e.target.value)}
+            placeholder="https://careers.iqvia.com/jobs/12345"
+          />
+          {applyUrl.trim() && (
+            <p className="mt-3 text-xs text-accent-700 bg-accent-50 ring-1 ring-inset ring-accent-200 rounded-lg px-3 py-2">
+              External mode is on. Students applying to this role will be redirected off-platform — you won&apos;t see them in the applicants tracker.
+            </p>
+          )}
         </div>
 
         <button type="submit" disabled={pending} className="lg:hidden btn-primary btn-lg w-full justify-center">

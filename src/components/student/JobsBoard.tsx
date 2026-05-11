@@ -71,6 +71,7 @@ export function JobsBoard({ jobs, courses }: { jobs: Job[]; courses: Course[] })
                     <div className="flex items-center gap-2 flex-wrap">
                       <h3 className="text-lg font-display font-bold text-ink-900 truncate">{j.title}</h3>
                       {j.entryLevelFriendly && <span className="badge-accent text-[10px]">Entry-level friendly</span>}
+                      {j.applyUrl && <span className="badge-ink text-[10px]">External apply</span>}
                     </div>
                     <p className="mt-0.5 text-sm text-ink-600">{j.company} · {j.city}, {j.country}</p>
                   </div>
