@@ -3,8 +3,8 @@ import {
   Stethoscope, ClipboardCheck, FlaskConical, Database,
   type LucideIcon
 } from 'lucide-react';
-import { faqs } from '@/lib/data';
 import { fetchCourses } from '@/lib/db/courses';
+import { fetchFaqs } from '@/lib/db/faqs';
 import { Reveal } from '@/components/ui/Reveal';
 import { Accordion } from '@/components/ui/Disclosure';
 import { CoursesRealtime } from '@/components/realtime/CoursesRealtime';
@@ -22,7 +22,7 @@ const ICONS_BY_SLUG: Record<string, LucideIcon> = {
 const FALLBACK_ICON: LucideIcon = FlaskConical;
 
 export default async function CoursesPage() {
-  const courses = await fetchCourses();
+  const [courses, faqs] = await Promise.all([fetchCourses(), fetchFaqs()]);
   return (
     <>
       <CoursesRealtime />
@@ -127,7 +127,7 @@ export default async function CoursesPage() {
               <span aria-hidden>→</span>
             </Link>
           </div>
-          <Accordion items={faqs.map((f) => ({ q: f.q, a: f.a }))} />
+          <Accordion items={faqs.map((f) => ({ q: f.question, a: f.answer }))} />
         </div>
       </section>
     </>

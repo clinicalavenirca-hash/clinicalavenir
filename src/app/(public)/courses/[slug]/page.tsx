@@ -1,8 +1,8 @@
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { ArrowLeft, Check, MessageCircle } from 'lucide-react';
-import { faqs } from '@/lib/data';
 import { fetchCourseBySlug } from '@/lib/db/courses';
+import { fetchFaqs } from '@/lib/db/faqs';
 import { fetchCourseCurriculum } from '@/lib/db/modules';
 import { Reveal } from '@/components/ui/Reveal';
 import { Accordion } from '@/components/ui/Disclosure';
@@ -15,7 +15,10 @@ export const dynamic = 'force-dynamic';
 export default async function CourseDetailPage({ params }: { params: { slug: string } }) {
   const course = await fetchCourseBySlug(params.slug);
   if (!course) notFound();
-  const modules = await fetchCourseCurriculum(course.slug);
+  const [modules, faqs] = await Promise.all([
+    fetchCourseCurriculum(course.slug),
+    fetchFaqs()
+  ]);
   const fillBase = course.totalSeats > 0 ? ((course.totalSeats - course.seatsRemaining) / course.totalSeats) * 100 : 0;
   const fill = Math.max(0, Math.min(100, Math.round(fillBase)));
   const closed = isCourseRegistrationClosed(course);
@@ -110,7 +113,7 @@ export default async function CourseDetailPage({ params }: { params: { slug: str
             <Reveal>
               <h2>Frequently asked</h2>
               <div className="mt-6">
-                <Accordion items={faqs.slice(0, 4).map(f => ({ q: f.q, a: f.a }))} />
+                <Accordion items={faqs.slice(0, 4).map(f => ({ q: f.question, a: f.answer }))} />
               </div>
             </Reveal>
           </div>

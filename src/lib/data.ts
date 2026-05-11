@@ -86,6 +86,15 @@ export type Story = {
 };
 
 export type FAQ = { q: string; a: string };
+/** Database-backed FAQ row. The legacy `FAQ` shape above is kept for the
+ *  in-memory seed list; admin-managed rows use this richer shape. */
+export type FaqRow = {
+  id: string;
+  question: string;
+  answer: string;
+  category: string | null;
+  orderIndex: number;
+};
 export type InterviewQuestion = { topic: string; question: string; answer: string };
 
 export type Application = {
@@ -171,6 +180,11 @@ export type JobApplication = {
 };
 
 // Static UI content — these never live in the database.
+/**
+ * @deprecated FAQs now live in the `faqs` Supabase table and are fetched via
+ * `lib/db/faqs.ts`. This array is kept only as a build-time fallback for
+ * any code path that hasn't migrated yet. Edit FAQs from the admin console.
+ */
 export const faqs: FAQ[] = [
   { q: 'Are sessions recorded?', a: 'Yes — every live class is recorded and added to your dashboard within 24 hours so you can revisit any topic at your own pace.' },
   { q: 'Do you help with job placement?', a: 'We do not promise placement, but we run a curated job board (only roles tagged to your track), 1:1 resume reviews, and mock interviews with the instructor.' },

@@ -1,7 +1,7 @@
 'use client';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { LayoutGrid, Inbox, Users, BookOpen, Briefcase, Quote, MessageSquare, LogOut } from 'lucide-react';
+import { LayoutGrid, Inbox, Users, BookOpen, Briefcase, Quote, MessageSquare, HelpCircle, LogOut } from 'lucide-react';
 import type { Profile } from '@/lib/data';
 import { signOut } from '@/app/actions/auth';
 import { initials, cn } from '@/lib/utils';
@@ -15,7 +15,8 @@ const links = [
 const catalog = [
   { href: '/admin/courses', label: 'Courses', Icon: BookOpen },
   { href: '/admin/jobs',    label: 'Jobs',    Icon: Briefcase },
-  { href: '/admin/stories', label: 'Stories', Icon: Quote }
+  { href: '/admin/stories', label: 'Stories', Icon: Quote },
+  { href: '/admin/faqs',    label: 'FAQs',    Icon: HelpCircle }
 ];
 
 export function AdminSidebar({ profile, onClose }: { profile: Profile; onClose?: () => void }) {

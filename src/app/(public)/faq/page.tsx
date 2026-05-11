@@ -2,7 +2,7 @@ import Link from 'next/link';
 import { ArrowUpRight } from 'lucide-react';
 import { Reveal } from '@/components/ui/Reveal';
 import { Accordion } from '@/components/ui/Disclosure';
-import { faqs } from '@/lib/data';
+import { fetchFaqs } from '@/lib/db/faqs';
 
 export const dynamic = 'force-dynamic';
 
@@ -13,7 +13,8 @@ const STATS = [
   { value: 'Live', label: 'every session' }
 ];
 
-export default function FAQPage() {
+export default async function FAQPage() {
+  const faqs = await fetchFaqs();
   return (
     <>
       {/* HERO */}
@@ -101,7 +102,7 @@ export default function FAQPage() {
 
           {/* Accordion */}
           <div className="lg:col-span-8">
-            <Accordion items={faqs.map((f) => ({ q: f.q, a: f.a }))} />
+            <Accordion items={faqs.map((f) => ({ q: f.question, a: f.answer }))} />
           </div>
         </div>
       </section>
