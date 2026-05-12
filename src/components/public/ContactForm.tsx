@@ -1,6 +1,6 @@
 'use client';
 import { useState, useTransition } from 'react';
-import { ArrowRight, Check, Loader2 } from 'lucide-react';
+import { ArrowRight, Check, Loader2, MessageCircle } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { countries } from '@/lib/countries';
 import { toast } from '@/components/ui/Toast';
@@ -23,6 +23,7 @@ const TOPICS = [
 export function ContactForm() {
   const [pending, startTransition] = useTransition();
   const [done, setDone] = useState(false);
+  const [whatsappMessage, setWhatsappMessage] = useState('');
 
   const [fullName, setFullName] = useState('');
   const [email, setEmail] = useState('');
@@ -34,6 +35,22 @@ export function ContactForm() {
   function onSubmit(e: React.FormEvent) {
     e.preventDefault();
     if (pending || done) return;
+
+    // Build the WhatsApp message NOW so the success card can fire it on a
+    // direct user click — auto-opening after an await is fragile across
+    // browsers (popup blockers reject calls that lose user-gesture context).
+    const waMessage = [
+      '*New enquiry — Avenir*',
+      '',
+      `*Name:* ${fullName}`,
+      `*Email:* ${email}`,
+      phone ? `*Phone:* ${countryCode} ${phone}` : null,
+      topic ? `*Topic:* ${topic}` : null,
+      '',
+      '*Message:*',
+      message
+    ].filter(Boolean).join('\n');
+
     startTransition(async () => {
       const res = await submitContactMessage({
         fullName,
@@ -47,22 +64,8 @@ export function ContactForm() {
         toast(res.error, 'error');
         return;
       }
+      setWhatsappMessage(waMessage);
       setDone(true);
-
-      // Open WhatsApp deep link so the user can ping admin directly in
-      // addition to the message already saved to the DB inbox.
-      const waMessage = [
-        '*New enquiry — Avenir*',
-        '',
-        `*Name:* ${fullName}`,
-        `*Email:* ${email}`,
-        phone ? `*Phone:* ${countryCode} ${phone}` : null,
-        topic ? `*Topic:* ${topic}` : null,
-        '',
-        '*Message:*',
-        message
-      ].filter(Boolean).join('\n');
-      openWhatsApp(waMessage);
     });
   }
 
@@ -87,6 +90,16 @@ export function ContactForm() {
           Our team replies within 24 hours — usually faster on WhatsApp. We&apos;ve got
           everything we need to get back to you.
         </p>
+        {whatsappMessage && (
+          <button
+            type="button"
+            onClick={() => openWhatsApp(whatsappMessage)}
+            className="mt-6 inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-[#25D366] text-white font-semibold text-sm hover:bg-[#1ebe57] transition-colors shadow-soft"
+          >
+            <MessageCircle className="w-4 h-4" strokeWidth={2.4} />
+            Send to admin on WhatsApp
+          </button>
+        )}
       </motion.div>
     );
   }

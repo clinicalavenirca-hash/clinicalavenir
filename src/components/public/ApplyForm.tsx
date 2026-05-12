@@ -1,6 +1,6 @@
 'use client';
 import { useEffect, useState, useTransition } from 'react';
-import { ArrowRight, ShoppingCart, X, Loader2, Check } from 'lucide-react';
+import { ArrowRight, ShoppingCart, X, Loader2, Check, MessageCircle } from 'lucide-react';
 import { countries } from '@/lib/countries';
 import { toast } from '@/components/ui/Toast';
 import { submitApplication } from '@/app/actions/applications';
@@ -36,6 +36,7 @@ export function ApplyForm({
 }) {
   const [cart, setCart] = useState<string[]>([]);
   const [done, setDone] = useState(false);
+  const [whatsappMessage, setWhatsappMessage] = useState('');
   const [pending, startTransition] = useTransition();
   const isReturningStudent = Boolean(initialProfile);
 
@@ -67,42 +68,63 @@ export function ApplyForm({
     e.preventDefault();
     if (!cart.length) return;
     if (!agreed) { toast('Please confirm you understand the off-platform payment.', 'warning'); return; }
+    // Pre-compose the WhatsApp message NOW (while we still know the cart
+    // and form fields), so the success card can fire it on a direct user
+    // click instead of after a long await chain that browsers would block
+    // as a popup.
+    const programLabels = cart
+      .map((slug) => catalog.find((c) => c.slug === slug)?.title ?? slug)
+      .map((t) => `• ${t}`)
+      .join('\n');
+    const waMessage = [
+      '*New course application — Avenir*',
+      '',
+      `*Name:* ${fullName}`,
+      `*Email:* ${email}`,
+      phone ? `*Phone:* ${countryCode} ${phone}` : null,
+      country ? `*Location:* ${[city, country].filter(Boolean).join(', ')}` : null,
+      '',
+      '*Programs applied for:*',
+      programLabels,
+      message ? `\n*Note:* ${message}` : null
+    ].filter(Boolean).join('\n');
+
     startTransition(async () => {
       const res = await submitApplication({
         fullName, email, countryCode, phone, country, city, address, message, courseSlugs: cart
       });
       if (res?.error) { toast(res.error, 'error'); return; }
+      setWhatsappMessage(waMessage);
       setDone(true);
       toast('Application submitted. Our team will reach out within 24 hours.', 'success');
-
-      // Open WhatsApp with the application details so the user can also
-      // ping admin directly — admin already has the record in the DB.
-      const programLabels = cart
-        .map((slug) => catalog.find((c) => c.slug === slug)?.title ?? slug)
-        .map((t) => `• ${t}`)
-        .join('\n');
-      const waMessage = [
-        '*New course application — Avenir*',
-        '',
-        `*Name:* ${fullName}`,
-        `*Email:* ${email}`,
-        phone ? `*Phone:* ${countryCode} ${phone}` : null,
-        country ? `*Location:* ${[city, country].filter(Boolean).join(', ')}` : null,
-        '',
-        '*Programs applied for:*',
-        programLabels,
-        message ? `\n*Note:* ${message}` : null
-      ].filter(Boolean).join('\n');
-      openWhatsApp(waMessage);
     });
   }
 
   if (done) {
     return (
       <div className="max-w-xl mx-auto card card-pad text-center">
-        <div className="w-14 h-14 rounded-full bg-emerald-50 text-emerald-700 grid place-items-center mx-auto"><Check className="w-7 h-7" strokeWidth={2.5} /></div>
+        <div className="w-14 h-14 rounded-full bg-emerald-50 text-emerald-700 grid place-items-center mx-auto">
+          <Check className="w-7 h-7" strokeWidth={2.5} />
+        </div>
         <h2 className="mt-4 text-2xl">Application received.</h2>
-        <p className="mt-2 text-ink-600">Our admissions team will email you within 24 hours with payment options and next steps. You&apos;ll also get a WhatsApp message if you provided a phone number.</p>
+        <p className="mt-2 text-ink-600">
+          Our admissions team will email you within 24 hours with payment options and next steps.
+        </p>
+        {whatsappMessage && (
+          <>
+            <p className="mt-5 text-sm text-ink-700">
+              Want a faster reply? Ping us on WhatsApp — your application details are pre-filled.
+            </p>
+            <button
+              type="button"
+              onClick={() => openWhatsApp(whatsappMessage)}
+              className="mt-3 inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-[#25D366] text-white font-semibold text-sm hover:bg-[#1ebe57] transition-colors shadow-soft"
+            >
+              <MessageCircle className="w-4 h-4" strokeWidth={2.4} />
+              Send to admin on WhatsApp
+            </button>
+          </>
+        )}
       </div>
     );
   }
