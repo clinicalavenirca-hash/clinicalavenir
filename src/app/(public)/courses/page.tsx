@@ -58,14 +58,11 @@ export default async function CoursesPage() {
               {courses.map((c, i) => (
                 <Reveal key={c.id} delay={i * 0.05}>
                   <ProgramCard
-                    index={i + 1}
                     href={`/courses/${c.slug}`}
                     cover={c.cover}
                     tagline={c.tagline}
                     title={c.title}
                     blurb={c.shortDescription}
-                    duration={c.duration}
-                    seatsLine={`${c.seatsRemaining} seats left`}
                     Icon={ICONS_BY_SLUG[c.slug] ?? FALLBACK_ICON}
                   />
                 </Reveal>
