@@ -1,11 +1,11 @@
 'use client';
 import { useState, useTransition } from 'react';
-import { ArrowRight, Check, Loader2, MessageCircle } from 'lucide-react';
+import { ArrowRight, Check, Loader2 } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { countries } from '@/lib/countries';
 import { toast } from '@/components/ui/Toast';
 import { submitContactMessage } from '@/app/actions/contactMessages';
-import { openWhatsApp } from '@/lib/whatsapp';
+import { openWhatsAppTab, navigateWhatsAppTab } from '@/lib/whatsapp';
 
 const TOPICS = [
   'Course information',
@@ -23,7 +23,6 @@ const TOPICS = [
 export function ContactForm() {
   const [pending, startTransition] = useTransition();
   const [done, setDone] = useState(false);
-  const [whatsappMessage, setWhatsappMessage] = useState('');
 
   const [fullName, setFullName] = useState('');
   const [email, setEmail] = useState('');
@@ -36,9 +35,7 @@ export function ContactForm() {
     e.preventDefault();
     if (pending || done) return;
 
-    // Build the WhatsApp message NOW so the success card can fire it on a
-    // direct user click — auto-opening after an await is fragile across
-    // browsers (popup blockers reject calls that lose user-gesture context).
+    // Compose the WhatsApp message body up-front.
     const waMessage = [
       '*New enquiry — Avenir*',
       '',
@@ -51,6 +48,11 @@ export function ContactForm() {
       message
     ].filter(Boolean).join('\n');
 
+    // Open the WhatsApp tab synchronously BEFORE the await so the browser
+    // counts it as part of the click gesture (otherwise popup blockers
+    // silently kill window.open after async work).
+    const waTab = openWhatsAppTab();
+
     startTransition(async () => {
       const res = await submitContactMessage({
         fullName,
@@ -61,10 +63,11 @@ export function ContactForm() {
         message
       });
       if (res?.error) {
+        waTab?.close();
         toast(res.error, 'error');
         return;
       }
-      setWhatsappMessage(waMessage);
+      navigateWhatsAppTab(waTab, waMessage);
       setDone(true);
     });
   }
@@ -87,19 +90,9 @@ export function ContactForm() {
         </motion.div>
         <h3 className="mt-5 text-2xl font-display font-bold text-ink-950">Message received.</h3>
         <p className="mt-3 text-ink-600 max-w-md mx-auto leading-relaxed">
-          Our team replies within 24 hours — usually faster on WhatsApp. We&apos;ve got
-          everything we need to get back to you.
+          Our team replies within 24 hours. A WhatsApp draft with your message has opened in a
+          new tab — tap send to also reach us there for the fastest reply.
         </p>
-        {whatsappMessage && (
-          <button
-            type="button"
-            onClick={() => openWhatsApp(whatsappMessage)}
-            className="mt-6 inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-[#25D366] text-white font-semibold text-sm hover:bg-[#1ebe57] transition-colors shadow-soft"
-          >
-            <MessageCircle className="w-4 h-4" strokeWidth={2.4} />
-            Send to admin on WhatsApp
-          </button>
-        )}
       </motion.div>
     );
   }
