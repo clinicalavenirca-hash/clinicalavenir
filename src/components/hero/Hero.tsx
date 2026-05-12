@@ -134,9 +134,7 @@ export function Hero({ stories, nextCourse }: Props) {
                 <span className="w-1 h-1 rounded-full bg-ink-300" aria-hidden />
                 <span className="text-ink-500">
                   Format{' '}
-                  <span className="text-ink-950 font-semibold">
-                    {nextCourse.duration ? `Live · ${nextCourse.duration}` : 'Live cohorts'}
-                  </span>
+                  <span className="text-ink-950 font-semibold">Live · 30 days</span>
                 </span>
               </div>
             )}

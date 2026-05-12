@@ -75,7 +75,7 @@ export function InstructorSection({ instructor }: { instructor: Instructor }) {
             {/* Stat strip — horizontal pill row with dividers */}
             <Reveal delay={0.12}>
               <dl className="flex flex-wrap items-stretch gap-y-3 rounded-2xl bg-white/5 ring-1 ring-white/10 backdrop-blur px-5 py-4">
-                <StatItem label="Years" value={`${instructor.yearsExperience}+`} />
+                <StatItem label="Years" value="12+" />
                 <Divider />
                 <StatItem label="Based in" value={instructor.location} />
                 <Divider />
