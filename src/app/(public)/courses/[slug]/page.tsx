@@ -3,11 +3,9 @@ import { notFound } from 'next/navigation';
 import { ArrowLeft, Check, MessageCircle } from 'lucide-react';
 import { fetchCourseBySlug } from '@/lib/db/courses';
 import { fetchFaqs } from '@/lib/db/faqs';
-import { fetchCourseCurriculum } from '@/lib/db/modules';
 import { Reveal } from '@/components/ui/Reveal';
 import { Accordion } from '@/components/ui/Disclosure';
 import { CoursesRealtime } from '@/components/realtime/CoursesRealtime';
-import { ModuleAccordion } from '@/components/public/ModuleAccordion';
 import { formatDate, isCourseRegistrationClosed } from '@/lib/utils';
 
 export const dynamic = 'force-dynamic';
@@ -15,10 +13,7 @@ export const dynamic = 'force-dynamic';
 export default async function CourseDetailPage({ params }: { params: { slug: string } }) {
   const course = await fetchCourseBySlug(params.slug);
   if (!course) notFound();
-  const [modules, faqs] = await Promise.all([
-    fetchCourseCurriculum(course.slug),
-    fetchFaqs()
-  ]);
+  const faqs = await fetchFaqs();
   const fillBase = course.totalSeats > 0 ? ((course.totalSeats - course.seatsRemaining) / course.totalSeats) * 100 : 0;
   const fill = Math.max(0, Math.min(100, Math.round(fillBase)));
   const closed = isCourseRegistrationClosed(course);
@@ -88,12 +83,6 @@ export default async function CourseDetailPage({ params }: { params: { slug: str
                   </li>
                 ))}
               </ul>
-            </Reveal>
-
-            <Reveal>
-              <h2>Curriculum</h2>
-              <p className="mt-2 text-ink-600">Weekly modules with live sessions, recordings, hands-on labs, and 1:1 reviews.</p>
-              <ModuleAccordion modules={modules} />
             </Reveal>
 
             <Reveal>

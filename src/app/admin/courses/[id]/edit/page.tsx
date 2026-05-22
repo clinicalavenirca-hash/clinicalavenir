@@ -16,13 +16,10 @@ export default async function Page({ params }: { params: { id: string } }) {
           <ArrowLeft className="w-4 h-4" /> All courses
         </Link>
       </div>
-      <div className="flex items-end justify-between flex-wrap gap-4 mb-6">
-        <div>
-          <span className="eyebrow">Catalog</span>
-          <h1 className="mt-2 text-2xl sm:text-3xl">Edit {course.title}</h1>
-          <p className="mt-1 text-ink-600">Update fields and save. Changes go live immediately.</p>
-        </div>
-        <Link href={`/admin/courses/${course.id}/modules`} className="btn-secondary btn-md">Manage modules</Link>
+      <div className="mb-6">
+        <span className="eyebrow">Catalog</span>
+        <h1 className="mt-2 text-2xl sm:text-3xl">Edit {course.title}</h1>
+        <p className="mt-1 text-ink-600">Update fields and save. Changes go live immediately on the marketing site.</p>
       </div>
       <CourseEditForm course={course} />
     </>

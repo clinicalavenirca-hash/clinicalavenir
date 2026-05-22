@@ -1,10 +1,9 @@
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
-import { ArrowLeft, BookOpen, Clock } from 'lucide-react';
+import { ArrowLeft } from 'lucide-react';
 import { fetchStudent } from '@/lib/db/students';
 import { fetchProfile } from '@/lib/db/profiles';
 import { fetchAllCourses } from '@/lib/db/courses';
-import { fetchLearningStatus } from '@/lib/db/progress';
 import { fetchStudentJobApplications } from '@/lib/db/jobApplications';
 import { cn, formatDate } from '@/lib/utils';
 import { Avatar } from '@/components/ui/Avatar';
@@ -22,10 +21,9 @@ export default async function StudentDetailPage({ params }: { params: { id: stri
   const student = await fetchStudent(params.id);
   if (!student) notFound();
 
-  const [profile, courses, learning, jobApps] = await Promise.all([
+  const [profile, courses, jobApps] = await Promise.all([
     fetchProfile(student.id),
     fetchAllCourses(),
-    fetchLearningStatus(student.id),
     fetchStudentJobApplications(student.id)
   ]);
 
@@ -88,36 +86,6 @@ export default async function StudentDetailPage({ params }: { params: { id: stri
         </aside>
 
         <div className="lg:col-span-8 space-y-5">
-          <div className="card overflow-hidden">
-            <div className="px-5 py-4 border-b border-ink-100 flex items-center justify-between">
-              <h3 className="font-display font-semibold flex items-center gap-2"><BookOpen className="w-4 h-4 text-brand-600" /> Learning status</h3>
-              <span className="text-xs text-ink-500">{learning.length} enrolled</span>
-            </div>
-            {learning.length === 0 ? (
-              <div className="p-8 text-center text-sm text-ink-500">No courses started yet.</div>
-            ) : (
-              <ul className="divide-y divide-ink-100">
-                {learning.map((s) => (
-                  <li key={s.courseId} className="p-5">
-                    <div className="flex items-start justify-between gap-3 flex-wrap">
-                      <div className="min-w-0">
-                        <p className="font-semibold text-ink-900">{s.courseTitle}</p>
-                        <p className="text-xs text-ink-500 mt-0.5">{s.modulesCompleted} / {s.modulesTotal} modules · {s.videosWatched} / {s.videosTotal} lessons</p>
-                      </div>
-                      <div className="flex items-center gap-3 flex-shrink-0">
-                        {s.lastWatchedAt && <span className="text-xs text-ink-500 inline-flex items-center gap-1"><Clock className="w-3.5 h-3.5" /> Last watched {formatDate(s.lastWatchedAt)}</span>}
-                        <span className={cn('badge text-[11px]', s.percent >= 100 ? 'badge-success' : s.percent >= 50 ? 'badge-brand' : 'badge-ink')}>{s.percent}%</span>
-                      </div>
-                    </div>
-                    <div className="mt-3 h-1.5 rounded-full bg-ink-100 overflow-hidden">
-                      <div className="h-full bg-gradient-to-r from-brand-500 to-brand-700 transition-all" style={{ width: `${s.percent}%` }} />
-                    </div>
-                  </li>
-                ))}
-              </ul>
-            )}
-          </div>
-
           <ResetPasswordCard id={student.id} />
 
           <div className="card overflow-hidden">

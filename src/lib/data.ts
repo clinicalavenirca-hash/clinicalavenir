@@ -33,26 +33,6 @@ export type Course = {
   color: string;
 };
 
-export type Video = {
-  id: string;
-  title: string;
-  youtube: string;
-  duration: string;
-  orderIndex: number;
-  description?: string | null;
-};
-
-export type Module = {
-  id: string;
-  courseId: string;
-  week: string;
-  title: string;
-  description: string;
-  topics: string[];
-  orderIndex: number;
-  videos: Video[];
-};
-
 export type Job = {
   id: string;
   title: string;
@@ -161,6 +141,7 @@ export type Profile = {
   city: string | null;
   address: string | null;
   avatar: string | null;
+  linkedinUrl: string | null;
   joinedAt: string;
   status: 'active' | 'inactive';
 };
@@ -178,18 +159,6 @@ export type Instructor = {
   education: string;
   specialization: string;
   pastCompanies: string[];
-};
-
-export type LearningStatus = {
-  courseId: string;
-  courseSlug: string;
-  courseTitle: string;
-  modulesTotal: number;
-  modulesCompleted: number;
-  videosTotal: number;
-  videosWatched: number;
-  percent: number;
-  lastWatchedAt: string | null;
 };
 
 export type JobApplication = {

@@ -11,6 +11,7 @@ type Row = {
   city: string | null;
   address: string | null;
   avatar: string | null;
+  linkedin_url: string | null;
   status: 'active' | 'inactive';
   joined_at: string;
 };
@@ -26,6 +27,7 @@ function rowToProfile(r: Row): Profile {
     city: r.city,
     address: r.address,
     avatar: r.avatar,
+    linkedinUrl: r.linkedin_url,
     joinedAt: r.joined_at,
     status: r.status
   };

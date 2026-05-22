@@ -10,21 +10,25 @@ export async function updateMyProfile(input: {
   country: string;
   city: string;
   address: string;
+  linkedinUrl: string;
 }) {
   const me = await requireStudent();
   const supa = supabaseServer();
   if (!supa) return { error: 'Supabase not configured' };
+  const linkedin = input.linkedinUrl?.trim();
   const { error } = await supa.from('profiles').update({
     name: input.name,
     phone: input.phone,
     country_code: input.countryCode,
     country: input.country,
     city: input.city,
-    address: input.address
+    address: input.address,
+    linkedin_url: linkedin ? linkedin : null
   }).eq('id', me.id);
   if (error) return { error: error.message };
   revalidatePath('/student/profile');
   revalidatePath('/student/dashboard');
+  revalidatePath('/student/resume');
   return { ok: true };
 }
 

@@ -1,7 +1,7 @@
 'use client';
 import { useState, useTransition } from 'react';
 import { useRouter } from 'next/navigation';
-import { Camera, Loader2, Trash2 } from 'lucide-react';
+import { Camera, Loader2, Trash2, Linkedin } from 'lucide-react';
 import type { Profile } from '@/lib/data';
 import { countries } from '@/lib/countries';
 import { uploadImage } from '@/lib/supabase/storage';
@@ -23,6 +23,7 @@ export function ProfileForms({ profile }: { profile: Profile }) {
   const [country, setCountry] = useState(profile.country ?? '');
   const [city, setCity] = useState(profile.city ?? '');
   const [address, setAddress] = useState(profile.address ?? '');
+  const [linkedinUrl, setLinkedinUrl] = useState(profile.linkedinUrl ?? '');
 
   async function onAvatar(file: File | null | undefined) {
     if (!file) return;
@@ -48,7 +49,7 @@ export function ProfileForms({ profile }: { profile: Profile }) {
   function saveDetails(e: React.FormEvent) {
     e.preventDefault();
     startTransition(async () => {
-      const res = await updateMyProfile({ name, phone, countryCode, country, city, address });
+      const res = await updateMyProfile({ name, phone, countryCode, country, city, address, linkedinUrl });
       if (res?.error) { toast(res.error, 'error'); return; }
       toast('Profile saved.', 'success');
       router.refresh();
@@ -134,6 +135,20 @@ export function ProfileForms({ profile }: { profile: Profile }) {
               </select>
             </div>
             <div className="sm:col-span-2"><label className="label">Address</label><input className="input" value={address} onChange={(e) => setAddress(e.target.value)} placeholder="Street, unit, postal code" /></div>
+            <div className="sm:col-span-2">
+              <label className="label">LinkedIn profile</label>
+              <div className="relative">
+                <Linkedin className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-ink-400" strokeWidth={2} />
+                <input
+                  className="input pl-9"
+                  type="url"
+                  value={linkedinUrl}
+                  onChange={(e) => setLinkedinUrl(e.target.value)}
+                  placeholder="https://www.linkedin.com/in/your-handle"
+                />
+              </div>
+              <p className="helper">Used by the AI resume tailor and shared with admin on job applications.</p>
+            </div>
           </div>
           <div className="flex justify-end gap-3 pt-3 border-t border-ink-100">
             <button type="reset" className="btn-secondary btn-md">Cancel</button>

@@ -1,7 +1,10 @@
 'use client';
-import { useState } from 'react';
-import { Save, Printer, Plus, X, Eye } from 'lucide-react';
+import { useState, useTransition } from 'react';
+import Link from 'next/link';
+import { Save, Printer, Plus, X, Eye, Loader2, ArrowRight, Linkedin, AlertCircle } from 'lucide-react';
 import { toast } from '@/components/ui/Toast';
+import type { Profile, Job } from '@/lib/data';
+import { tailorResume } from '@/app/actions/ai';
 
 type Experience = { role: string; company: string; start: string; end: string; bullets: string };
 type Education  = { degree: string; school: string; years: string; notes: string };
@@ -25,8 +28,89 @@ const initial: Resume = {
   certifications: 'CITI Program — Good Clinical Practice (2026)\nAvenir — Clinical Research Program (in progress)'
 };
 
-export function ResumeBuilder() {
-  const [resume, setResume] = useState<Resume>(initial);
+export function ResumeBuilder({ profile, jobs }: { profile?: Profile; jobs?: Job[] }) {
+  const [resume, setResume] = useState<Resume>(() => initial);
+
+  // ---- AI tailor panel state -----------------------------------------------
+  const availableJobs = jobs ?? [];
+  const [selectedJobId, setSelectedJobId] = useState<string>(availableJobs[0]?.id ?? '');
+  const [linkedinDraft, setLinkedinDraft] = useState(profile?.linkedinUrl ?? '');
+  const [aiOutput, setAiOutput] = useState('');
+  const [aiError, setAiError] = useState('');
+  const [aiPending, startAi] = useTransition();
+  const selectedJob = availableJobs.find((j) => j.id === selectedJobId) ?? null;
+  const linkedinReady = Boolean(linkedinDraft.trim());
+
+  function runTailor() {
+    setAiError('');
+    if (!selectedJob) { setAiError('Pick a job from the dropdown first.'); return; }
+    if (!linkedinReady) { setAiError('Add your LinkedIn profile URL to continue.'); return; }
+
+    // Compose the current structured resume as a plain-text "current resume"
+    // input — the AI uses it as the source of facts and rewrites for the JD.
+    const currentResume = [
+      `${resume.fullName} — ${resume.title}`,
+      `${resume.email} · ${resume.phone} · ${resume.location} · ${linkedinDraft.trim()}`,
+      '',
+      'SUMMARY',
+      resume.summary,
+      '',
+      'EXPERIENCE',
+      ...resume.experiences.map((e) =>
+        `${e.role} — ${e.company} (${e.start}${e.end ? ` – ${e.end}` : ''})\n${e.bullets}`
+      ),
+      '',
+      'EDUCATION',
+      ...resume.education.map((e) =>
+        `${e.degree} — ${e.school} (${e.years})${e.notes ? `\n${e.notes}` : ''}`
+      ),
+      '',
+      'SKILLS',
+      resume.skills,
+      '',
+      'CERTIFICATIONS',
+      resume.certifications
+    ].filter(Boolean).join('\n');
+
+    const jd = [selectedJob.description, ...(selectedJob.qualifications ?? [])].filter(Boolean).join('\n\n');
+
+    startAi(async () => {
+      const res = await tailorResume({
+        jobTitle: selectedJob.title,
+        company: selectedJob.company,
+        jobDescription: jd,
+        resume: currentResume
+      });
+      if (res.error) { setAiError(res.error); return; }
+      setAiOutput(res.content ?? '');
+      toast('AI-tailored resume ready below. Edit then download.', 'success');
+    });
+  }
+
+  function downloadAi() {
+    if (!aiOutput) return;
+    // Open a new window with just the AI text, trigger print → user picks
+    // "Save as PDF" in the print dialog. Works in every browser without
+    // pulling in a PDF library.
+    const win = window.open('', '_blank');
+    if (!win) {
+      toast('Allow popups to download the PDF.', 'error');
+      return;
+    }
+    const safe = aiOutput.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+    const safeName = (resume.fullName || 'resume').replace(/[<>]/g, '');
+    win.document.write(`<!doctype html>
+<html><head><title>${safeName} — Tailored Resume</title>
+<style>
+  @page { size: A4; margin: 0; }
+  body { font-family: 'Helvetica Neue', Arial, sans-serif; margin: 0; padding: 24mm 18mm; white-space: pre-wrap; line-height: 1.5; font-size: 11pt; color: #111; }
+</style></head><body>${safe}</body></html>`);
+    win.document.close();
+    win.focus();
+    // Slight delay so the new window has time to layout before printing.
+    setTimeout(() => win.print(), 80);
+  }
+
   const set = <K extends keyof Resume>(k: K, v: Resume[K]) => setResume(r => ({ ...r, [k]: v }));
   const updateExp = (i: number, patch: Partial<Experience>) => setResume(r => ({ ...r, experiences: r.experiences.map((e, idx) => idx === i ? { ...e, ...patch } : e) }));
   const updateEdu = (i: number, patch: Partial<Education>)  => setResume(r => ({ ...r, education: r.education.map((e, idx) => idx === i ? { ...e, ...patch } : e) }));
@@ -52,6 +136,114 @@ export function ResumeBuilder() {
           </button>
         </div>
       </div>
+
+      {/* ---- AI Tailor panel — top of page ----------------------------- */}
+      <section className="card overflow-hidden mb-6 ring-1 ring-ink-200">
+        <header className="px-5 sm:px-6 py-4 bg-ink-950 text-white flex items-center justify-between flex-wrap gap-3">
+          <div>
+            <p className="text-[10px] font-semibold tracking-[0.22em] uppercase text-accent-400">AI tailor</p>
+            <h3 className="mt-0.5 text-base sm:text-lg font-display font-bold">
+              Match this resume to a job in your tracks
+            </h3>
+          </div>
+          <p className="text-xs text-ink-300 max-w-sm">
+            Pick a job, the AI rewrites the resume below to mirror the JD using only facts you&apos;ve entered.
+          </p>
+        </header>
+
+        <div className="p-5 sm:p-6 space-y-4">
+          {availableJobs.length === 0 ? (
+            <div className="flex items-start gap-2 text-sm text-ink-700 bg-ink-50 ring-1 ring-inset ring-ink-200 rounded-lg px-3 py-2">
+              <AlertCircle className="w-4 h-4 mt-0.5 flex-shrink-0" strokeWidth={2.2} />
+              <span>
+                No jobs in your tracks right now. Visit the <Link href="/student/jobs" className="font-semibold underline">job board</Link> when new roles drop, then come back to tailor your resume.
+              </span>
+            </div>
+          ) : (
+            <>
+              <div className="grid grid-cols-1 sm:grid-cols-[1fr_auto] gap-3 items-end">
+                <div>
+                  <label className="label">Select a job</label>
+                  <select
+                    className="input"
+                    value={selectedJobId}
+                    onChange={(e) => setSelectedJobId(e.target.value)}
+                  >
+                    {availableJobs.map((j) => (
+                      <option key={j.id} value={j.id}>
+                        {j.title} — {j.company}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+                <button
+                  type="button"
+                  onClick={runTailor}
+                  disabled={aiPending || !linkedinReady}
+                  className="btn-primary btn-md"
+                >
+                  {aiPending ? <Loader2 className="w-4 h-4 animate-spin" /> : null}
+                  {aiPending ? 'Generating…' : 'Generate tailored resume'}
+                  {!aiPending && <ArrowRight className="w-4 h-4" strokeWidth={2.2} />}
+                </button>
+              </div>
+
+              <div>
+                <label className="label">LinkedIn profile</label>
+                <div className="relative">
+                  <Linkedin className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-ink-400" strokeWidth={2} />
+                  <input
+                    type="url"
+                    className="input pl-9"
+                    value={linkedinDraft}
+                    onChange={(e) => setLinkedinDraft(e.target.value)}
+                    placeholder="https://www.linkedin.com/in/your-handle"
+                  />
+                </div>
+                {profile?.linkedinUrl ? (
+                  <p className="helper">Pulled from your profile. Edit only if you want to override for this resume.</p>
+                ) : (
+                  <p className="helper text-rose-600">
+                    Your profile doesn&apos;t have a LinkedIn URL saved.{' '}
+                    <Link href="/student/profile" className="font-semibold underline">Add it permanently</Link>
+                    {' '}or paste it here just for this generation.
+                  </p>
+                )}
+              </div>
+
+              {aiError && (
+                <div className="flex items-start gap-2 text-sm text-rose-700 bg-rose-50 ring-1 ring-inset ring-rose-200 rounded-lg px-3 py-2">
+                  <AlertCircle className="w-4 h-4 mt-0.5 flex-shrink-0" strokeWidth={2.2} />
+                  <span>{aiError}</span>
+                </div>
+              )}
+
+              {aiOutput && (
+                <div className="rounded-xl bg-brand-50/40 ring-1 ring-inset ring-brand-200 p-4 space-y-3">
+                  <div className="flex items-center justify-between flex-wrap gap-2">
+                    <p className="text-[10px] font-semibold tracking-[0.22em] uppercase text-brand-700">
+                      Tailored output — edit then download
+                    </p>
+                    <button
+                      type="button"
+                      onClick={downloadAi}
+                      className="btn-primary btn-sm"
+                    >
+                      <Printer className="w-3.5 h-3.5" /> Download as PDF
+                    </button>
+                  </div>
+                  <textarea
+                    rows={18}
+                    className="input resize-y font-mono text-xs bg-white"
+                    value={aiOutput}
+                    onChange={(e) => setAiOutput(e.target.value)}
+                  />
+                </div>
+              )}
+            </>
+          )}
+        </div>
+      </section>
 
       <div className="grid lg:grid-cols-2 gap-6">
         {/* Form */}

@@ -54,7 +54,9 @@ export function DecisionsPanel({ applications, courses, jobApplications, jobs }:
                   </div>
                   {a.status === 'paid' && (
                     <p className="mt-3 text-xs text-emerald-700">
-                      Your courses are now in <Link href="/student/courses" className="font-semibold underline">My Courses</Link>.
+                      Approved — your account is active. Head to the{' '}
+                      <Link href="/student/jobs" className="font-semibold underline">job board</Link>
+                      {' '}to start applying.
                     </p>
                   )}
                   {a.status === 'declined' && (

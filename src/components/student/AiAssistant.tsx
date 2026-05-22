@@ -1,6 +1,6 @@
 'use client';
 import { useState, useTransition } from 'react';
-import { Loader2, ArrowRight, Copy, Check, FileText, Mail, AlertCircle, BookOpen } from 'lucide-react';
+import { Loader2, ArrowRight, Copy, Check, FileText, Mail, AlertCircle, BookOpen, Printer } from 'lucide-react';
 import { toast } from '@/components/ui/Toast';
 import { tailorResume, generateCoverLetter } from '@/app/actions/ai';
 import { cn } from '@/lib/utils';
@@ -73,6 +73,31 @@ export function AiAssistant({
       toast('Copied to clipboard.', 'success');
       setTimeout(() => setCopied(false), 1800);
     });
+  }
+
+  /** Opens a fresh print window with just the output → user picks "Save as
+   *  PDF" in the dialog. Works in every browser without a PDF dependency. */
+  function downloadPdf() {
+    if (!output) return;
+    const win = window.open('', '_blank');
+    if (!win) {
+      toast('Allow popups to download the PDF.', 'error');
+      return;
+    }
+    const safeBody = output.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+    const docTitle =
+      mode === 'cover'
+        ? `Cover letter${company ? ' — ' + company : ''}`
+        : `Tailored resume${company ? ' — ' + company : ''}`;
+    win.document.write(`<!doctype html>
+<html><head><title>${docTitle.replace(/[<>]/g, '')}</title>
+<style>
+  @page { size: A4; margin: 0; }
+  body { font-family: 'Helvetica Neue', Arial, sans-serif; margin: 0; padding: 24mm 18mm; white-space: pre-wrap; line-height: 1.5; font-size: 11pt; color: #111; }
+</style></head><body>${safeBody}</body></html>`);
+    win.document.close();
+    win.focus();
+    setTimeout(() => win.print(), 80);
   }
 
   return (
@@ -192,23 +217,34 @@ export function AiAssistant({
 
         {/* OUTPUT */}
         <div className="card overflow-hidden flex flex-col">
-          <div className="px-5 py-4 border-b border-ink-100 flex items-center justify-between gap-3">
+          <div className="px-5 py-4 border-b border-ink-100 flex items-center justify-between gap-3 flex-wrap">
             <p className="eyebrow !text-ink-700">
               {mode === 'tailor' ? 'Tailored resume' : 'Cover letter draft'}
             </p>
-            <button
-              type="button"
-              onClick={copy}
-              disabled={!output}
-              className={cn(
-                'inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold transition-colors disabled:opacity-40',
-                copied ? 'bg-emerald-50 text-emerald-700' : 'bg-white text-ink-700 ring-1 ring-inset ring-ink-200 hover:ring-ink-400'
-              )}
-            >
-              {copied
-                ? <><Check className="w-3.5 h-3.5" strokeWidth={2.4} />Copied</>
-                : <><Copy className="w-3.5 h-3.5" strokeWidth={2.2} />Copy</>}
-            </button>
+            <div className="flex items-center gap-2">
+              <button
+                type="button"
+                onClick={copy}
+                disabled={!output}
+                className={cn(
+                  'inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold transition-colors disabled:opacity-40',
+                  copied ? 'bg-emerald-50 text-emerald-700' : 'bg-white text-ink-700 ring-1 ring-inset ring-ink-200 hover:ring-ink-400'
+                )}
+              >
+                {copied
+                  ? <><Check className="w-3.5 h-3.5" strokeWidth={2.4} />Copied</>
+                  : <><Copy className="w-3.5 h-3.5" strokeWidth={2.2} />Copy</>}
+              </button>
+              <button
+                type="button"
+                onClick={downloadPdf}
+                disabled={!output}
+                className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold transition-colors disabled:opacity-40 bg-ink-950 text-white hover:bg-ink-900"
+              >
+                <Printer className="w-3.5 h-3.5" strokeWidth={2.2} />
+                Download PDF
+              </button>
+            </div>
           </div>
           <div className="flex-1 p-5 min-h-[400px]">
             {pending ? (
@@ -219,7 +255,14 @@ export function AiAssistant({
                 </div>
               </div>
             ) : output ? (
-              <pre className="text-sm text-ink-800 leading-relaxed whitespace-pre-wrap font-sans">{output}</pre>
+              <textarea
+                value={output}
+                onChange={(e) => setOutput(e.target.value)}
+                rows={20}
+                className="w-full text-sm text-ink-800 leading-relaxed font-sans bg-transparent border-0 focus:outline-none focus:ring-0 resize-none p-0"
+                spellCheck={false}
+              />
+
             ) : (
               <div className="h-full grid place-items-center text-center px-6">
                 <div className="max-w-sm">

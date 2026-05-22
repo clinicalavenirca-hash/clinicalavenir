@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { Inbox, Users, Briefcase, Video, Plus, Activity } from 'lucide-react';
+import { Inbox, Users, Briefcase, Plus, Activity } from 'lucide-react';
 import { supabaseServer } from '@/lib/supabase/server';
 import { Reveal } from '@/components/ui/Reveal';
 import { ApplicationsRealtime } from '@/components/realtime/ApplicationsRealtime';
@@ -24,20 +24,17 @@ export default async function AdminDashboardPage() {
   let activeStudents = 0;
   let totalStudents = 0;
   let liveJobs = 0;
-  let totalVideos = 0;
   let recentApps: Array<{ id: string; full_name: string; email: string; status: string; courses: string[]; created_at: string; is_existing: boolean }> = [];
 
   if (supa) {
     const todayIso = new Date().toISOString().slice(0, 10);
     const cutoff30 = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString();
 
-    // 6 parallel lightweight queries instead of 5 full-table fetches.
     const [
       newAppsRes,
       activeStudentsRes,
       totalStudentsRes,
       liveJobsRes,
-      totalVideosRes,
       recentAppsRes
     ] = await Promise.all([
       supa.from('applications').select('*', { count: 'exact', head: true }).eq('status', 'new'),
@@ -49,8 +46,6 @@ export default async function AdminDashboardPage() {
         .eq('is_published', true)
         .gte('posted_at', cutoff30)
         .or(`deadline.is.null,deadline.gte.${todayIso}`),
-      supa.from('videos').select('*', { count: 'exact', head: true }),
-      // 5 most recent applications, only the columns we render
       supa
         .from('applications')
         .select('id, full_name, email, status, course_slugs, created_at, is_existing')
@@ -62,7 +57,6 @@ export default async function AdminDashboardPage() {
     activeStudents = activeStudentsRes.count ?? 0;
     totalStudents = totalStudentsRes.count ?? 0;
     liveJobs = liveJobsRes.count ?? 0;
-    totalVideos = totalVideosRes.count ?? 0;
     recentApps = (recentAppsRes.data ?? []).map((r: any) => ({
       id: r.id,
       full_name: r.full_name,
@@ -77,8 +71,7 @@ export default async function AdminDashboardPage() {
   const cards = [
     { label: 'New applications', value: newApps,                                   hint: 'Need first contact', tone: 'bg-accent-50 text-accent-700', Icon: Inbox },
     { label: 'Active students',  value: `${activeStudents} / ${totalStudents}`,    hint: 'Active vs total',    tone: 'bg-brand-50 text-brand-700',   Icon: Users },
-    { label: 'Live jobs',        value: liveJobs,                                  hint: 'Open right now',     tone: 'bg-emerald-50 text-emerald-700',Icon: Briefcase },
-    { label: 'Videos uploaded',  value: totalVideos,                               hint: 'Across all courses', tone: 'bg-brand-50 text-brand-700', Icon: Video }
+    { label: 'Live jobs',        value: liveJobs,                                  hint: 'Open right now',     tone: 'bg-emerald-50 text-emerald-700',Icon: Briefcase }
   ];
 
   const toneFor = (s: string): Tone =>
@@ -99,7 +92,7 @@ export default async function AdminDashboardPage() {
         <span className="badge-success"><span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />Realtime</span>
       </div>
 
-      <div className="grid grid-cols-2 lg:grid-cols-5 gap-4 mb-8">
+      <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 mb-8">
         {cards.map((c, i) => (
           <Reveal key={c.label} delay={i * 0.04}>
             <div className="stat-card">
