@@ -4,6 +4,7 @@ import { fetchAllJobs } from '@/lib/db/jobs';
 import { fetchAllCourses } from '@/lib/db/courses';
 import { initials, formatDate, isJobDeadlinePassed } from '@/lib/utils';
 import { DeleteJobButton } from '@/components/admin/DeleteJobButton';
+import { BulkImportJobsModal } from '@/components/admin/BulkImportJobsModal';
 
 export const dynamic = 'force-dynamic';
 
@@ -17,7 +18,10 @@ export default async function Page() {
           <h1 className="mt-2 text-2xl sm:text-3xl">Jobs</h1>
           <p className="mt-1 text-ink-600">Post roles tagged to a course track. Only enrolled students see relevant listings.</p>
         </div>
-        <Link href="/admin/jobs/new" className="btn-primary btn-md"><Plus className="w-4 h-4" strokeWidth={2.5} /> Post a role</Link>
+        <div className="flex items-center gap-2">
+          <BulkImportJobsModal courses={courses} />
+          <Link href="/admin/jobs/new" className="btn-primary btn-md"><Plus className="w-4 h-4" strokeWidth={2.5} /> Post a role</Link>
+        </div>
       </div>
 
       <div className="card overflow-hidden">
