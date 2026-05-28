@@ -57,12 +57,12 @@ export function BulkImportJobsModal({ courses }: { courses: Course[] }) {
 
       // Header detection — scraper uses these exact labels.
       const parsed: Row[] = json.map((r) => {
-        const title = String(r['Position Name'] ?? '').trim();
-        const company = String(r['Company'] ?? '').trim();
-        const location = String(r['Location'] ?? '').trim();
-        const url = String(r['URL'] ?? '').trim();
-        const externalLink = String(r['External Apply Link'] ?? '').trim();
-        const postedAtRaw = r['Posted At'];
+        const title = String(r['Position Name'] ?? r['Job Title'] ?? r['Title'] ?? '').trim();
+        const company = String(r['Company'] ?? r['Company Name'] ?? '').trim();
+        const location = String(r['Location'] ?? r['Job Location'] ?? '').trim();
+        const url = String(r['URL'] ?? r['Job URL'] ?? r['Indeed URL'] ?? '').trim();
+        const externalLink = String(r['External Apply Link'] ?? r['Apply Link'] ?? r['External URL'] ?? r['Company Apply Link'] ?? '').trim();
+        const postedAtRaw = r['Posted At'] ?? r['Posted Date'] ?? r['Date Posted'];
 
         // Apply URL: prefer the direct external link, fall back to the
         // indeed.com listing URL — both make the job an external-apply role.
@@ -315,7 +315,7 @@ export function BulkImportJobsModal({ courses }: { courses: Course[] }) {
                               <th className="px-3 py-2 text-left text-[10px] uppercase tracking-[0.18em] font-semibold text-ink-500">Company</th>
                               <th className="px-3 py-2 text-left text-[10px] uppercase tracking-[0.18em] font-semibold text-ink-500">Location</th>
                               <th className="px-3 py-2 text-left text-[10px] uppercase tracking-[0.18em] font-semibold text-ink-500">Posted</th>
-                              <th className="px-3 py-2 text-left text-[10px] uppercase tracking-[0.18em] font-semibold text-ink-500">Link</th>
+                              <th className="px-3 py-2 text-left text-[10px] uppercase tracking-[0.18em] font-semibold text-ink-500">Apply URL</th>
                             </tr>
                           </thead>
                           <tbody>
@@ -350,11 +350,13 @@ export function BulkImportJobsModal({ courses }: { courses: Course[] }) {
                                   <td className="px-3 py-2 align-top text-ink-500 text-xs whitespace-nowrap">
                                     {r.postedAt ? new Date(r.postedAt).toLocaleDateString('en-CA') : '—'}
                                   </td>
-                                  <td className="px-3 py-2 align-top text-ink-500 text-xs">
+                                  <td className="px-3 py-2 align-top text-ink-500 text-xs max-w-xs">
                                     {r.applyUrl ? (
-                                      <a href={r.applyUrl} target="_blank" rel="noopener noreferrer" className="text-brand-700 hover:underline truncate inline-block max-w-[18ch]">
-                                        link
-                                      </a>
+                                      <div className="flex items-center gap-2">
+                                        <a href={r.applyUrl} target="_blank" rel="noopener noreferrer" className="text-brand-700 hover:underline text-xs truncate flex-1" title={r.applyUrl}>
+                                          {r.applyUrl.substring(0, 50)}...
+                                        </a>
+                                      </div>
                                     ) : <em className="text-rose-500">missing</em>}
                                   </td>
                                 </tr>

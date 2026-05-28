@@ -17,7 +17,7 @@ export async function applyToJob(jobId: string) {
 
   // Snapshot the current resume (if any)
   const { data: resume } = await supa.from('resumes').select('*').eq('user_id', me.id).maybeSingle();
-  const snapshot = resume ?? { fullName: me.name, pdfName: `${me.name.replace(/\s+/g, '_')}_resume.pdf` };
+  const snapshot = resume ? { fullName: resume.full_name, pdfName: resume.pdf_name, resumeId: resume.id } : { fullName: me.name, pdfName: `${me.name.replace(/\s+/g, '_')}_resume.pdf` };
 
   const { error } = await supa.from('job_applications').insert({
     user_id: me.id,
@@ -49,4 +49,61 @@ export async function updateJobApplicationNotes(id: string, notes: string, follo
   if (error) return { error: error.message };
   revalidatePath('/student/applications');
   return { ok: true };
+}
+
+export async function deleteJobApplication(id: string) {
+  const me = await requireStudent();
+  const supa = supabaseServer();
+  if (!supa) return { error: 'Supabase not configured' };
+  const { error } = await supa.from('job_applications').delete().eq('id', id).eq('user_id', me.id);
+  if (error) return { error: error.message };
+  revalidatePath('/student/applications');
+  return { ok: true };
+}
+
+export async function applyToJobExternal(jobId: string) {
+  const me = await requireStudent();
+  const supa = supabaseServer();
+  if (!supa) return { error: 'Supabase not configured' };
+
+  // Get the job to verify it exists and is published
+  const { data: job, error: fetchError } = await supa.from('jobs').select('deadline, is_published, apply_url, title, company').eq('id', jobId).maybeSingle();
+  
+  if (fetchError) {
+    console.error('[applyToJobExternal] Fetch error:', fetchError);
+    return { error: 'Failed to fetch job details' };
+  }
+  
+  if (!job) return { error: 'Job not found.' };
+  if (!job.is_published) return { error: 'This role is no longer accepting applications.' };
+  if (!job.apply_url) {
+    console.error(`[applyToJobExternal] Job ${jobId} (${job.title} @ ${job.company}) has no apply_url`);
+    return { error: 'This job does not have an external apply link.' };
+  }
+  if (job.deadline && job.deadline < new Date().toISOString().slice(0, 10)) {
+    return { error: 'The application deadline for this role has passed.' };
+  }
+
+  console.log(`[applyToJobExternal] Job ${jobId} apply_url: ${job.apply_url}`);
+
+  // Snapshot the current resume (if any)
+  const { data: resume } = await supa.from('resumes').select('*').eq('user_id', me.id).maybeSingle();
+  const snapshot = resume ? { fullName: resume.full_name, pdfName: resume.pdf_name, resumeId: resume.id } : { fullName: me.name, pdfName: `${me.name.replace(/\s+/g, '_')}_resume.pdf` };
+
+  // Check if already applied
+  const { data: existing } = await supa.from('job_applications').select('id').eq('user_id', me.id).eq('job_id', jobId).maybeSingle();
+  
+  if (!existing) {
+    const { error } = await supa.from('job_applications').insert({
+      user_id: me.id,
+      job_id: jobId,
+      status: 'applied',
+      resume_snapshot: snapshot
+    });
+    if (error) return { error: error.message };
+  }
+  
+  revalidatePath('/student/applications');
+  revalidatePath(`/student/jobs/${jobId}`);
+  return { ok: true, redirectUrl: job.apply_url };
 }

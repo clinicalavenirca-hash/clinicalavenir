@@ -5,6 +5,7 @@ import { Save, Printer, Plus, X, Eye, Loader2, ArrowRight, Linkedin, AlertCircle
 import { toast } from '@/components/ui/Toast';
 import type { Profile, Job } from '@/lib/data';
 import { tailorResume } from '@/app/actions/ai';
+import { saveResume } from '@/app/actions/resumes';
 
 type Experience = { role: string; company: string; start: string; end: string; bullets: string };
 type Education  = { degree: string; school: string; years: string; notes: string };
@@ -30,6 +31,7 @@ const initial: Resume = {
 
 export function ResumeBuilder({ profile, jobs }: { profile?: Profile; jobs?: Job[] }) {
   const [resume, setResume] = useState<Resume>(() => initial);
+  const [savePending, startSave] = useTransition();
 
   // ---- AI tailor panel state -----------------------------------------------
   const availableJobs = jobs ?? [];
@@ -40,6 +42,17 @@ export function ResumeBuilder({ profile, jobs }: { profile?: Profile; jobs?: Job
   const [aiPending, startAi] = useTransition();
   const selectedJob = availableJobs.find((j) => j.id === selectedJobId) ?? null;
   const linkedinReady = Boolean(linkedinDraft.trim());
+
+  function handleSave() {
+    startSave(async () => {
+      const result = await saveResume(resume);
+      if (result.error) {
+        toast(result.error, 'error');
+      } else {
+        toast('Resume saved successfully!', 'success');
+      }
+    });
+  }
 
   function runTailor() {
     setAiError('');
@@ -128,8 +141,9 @@ export function ResumeBuilder({ profile, jobs }: { profile?: Profile; jobs?: Job
           <p className="mt-1 text-ink-600">ATS-friendly. Edit on the left, preview on the right. Print to PDF when you&apos;re done.</p>
         </div>
         <div className="flex gap-2">
-          <button onClick={() => toast('Resume saved.', 'success')} className="btn-secondary btn-md">
-            <Save className="w-4 h-4" /> Save
+          <button onClick={handleSave} disabled={savePending} className="btn-secondary btn-md">
+            {savePending ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}
+            {savePending ? 'Saving...' : 'Save'}
           </button>
           <button onClick={() => window.print()} className="btn-primary btn-md">
             <Printer className="w-4 h-4" /> Download as PDF
@@ -139,7 +153,7 @@ export function ResumeBuilder({ profile, jobs }: { profile?: Profile; jobs?: Job
 
       {/* ---- AI Tailor panel — top of page ----------------------------- */}
       <section className="card overflow-hidden mb-6 ring-1 ring-ink-200">
-        <header className="px-5 sm:px-6 py-4 bg-ink-950 text-white flex items-center justify-between flex-wrap gap-3">
+        <header className="px-5 sm:px-6 py-3 bg-ink-950 text-white flex items-center justify-between flex-wrap gap-3">
           <div>
             <p className="text-[10px] font-semibold tracking-[0.22em] uppercase text-accent-400">AI tailor</p>
             <h3 className="mt-0.5 text-base sm:text-lg font-display font-bold">
@@ -151,7 +165,7 @@ export function ResumeBuilder({ profile, jobs }: { profile?: Profile; jobs?: Job
           </p>
         </header>
 
-        <div className="p-5 sm:p-6 space-y-4">
+        <div className="p-4 sm:p-5 space-y-4">
           {availableJobs.length === 0 ? (
             <div className="flex items-start gap-2 text-sm text-ink-700 bg-ink-50 ring-1 ring-inset ring-ink-200 rounded-lg px-3 py-2">
               <AlertCircle className="w-4 h-4 mt-0.5 flex-shrink-0" strokeWidth={2.2} />
@@ -247,9 +261,9 @@ export function ResumeBuilder({ profile, jobs }: { profile?: Profile; jobs?: Job
 
       <div className="grid lg:grid-cols-2 gap-6">
         {/* Form */}
-        <div className="space-y-5 lg:max-h-[calc(100vh-200px)] lg:overflow-y-auto scroll-thin lg:pr-2">
+        <div className="space-y-5">
           <section className="card card-pad">
-            <h3 className="text-lg font-display font-semibold mb-4">Personal details</h3>
+            <h3 className="text-base font-display font-semibold mb-3">Personal details</h3>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div className="sm:col-span-2"><label className="label">Full name</label><input className="input" value={resume.fullName} onChange={e => set('fullName', e.target.value)} /></div>
               <div><label className="label">Title / target role</label><input className="input" value={resume.title} onChange={e => set('title', e.target.value)} /></div>
@@ -261,13 +275,13 @@ export function ResumeBuilder({ profile, jobs }: { profile?: Profile; jobs?: Job
           </section>
 
           <section className="card card-pad">
-            <h3 className="text-lg font-display font-semibold mb-4">Professional summary</h3>
-            <textarea rows={4} className="input resize-none" value={resume.summary} onChange={e => set('summary', e.target.value)} />
+            <h3 className="text-base font-display font-semibold mb-3">Professional summary</h3>
+            <textarea rows={3} className="input resize-none" value={resume.summary} onChange={e => set('summary', e.target.value)} />
           </section>
 
           <section className="card card-pad">
-            <div className="flex items-center justify-between mb-4">
-              <h3 className="text-lg font-display font-semibold">Experience</h3>
+            <div className="flex items-center justify-between mb-3">
+              <h3 className="text-base font-display font-semibold">Experience</h3>
               <button onClick={addExp} className="btn-ghost btn-sm"><Plus className="w-4 h-4" /> Add</button>
             </div>
             <div className="space-y-4">
@@ -290,8 +304,8 @@ export function ResumeBuilder({ profile, jobs }: { profile?: Profile; jobs?: Job
           </section>
 
           <section className="card card-pad">
-            <div className="flex items-center justify-between mb-4">
-              <h3 className="text-lg font-display font-semibold">Education</h3>
+            <div className="flex items-center justify-between mb-3">
+              <h3 className="text-base font-display font-semibold">Education</h3>
               <button onClick={addEdu} className="btn-ghost btn-sm"><Plus className="w-4 h-4" /> Add</button>
             </div>
             <div className="space-y-4">
@@ -310,20 +324,20 @@ export function ResumeBuilder({ profile, jobs }: { profile?: Profile; jobs?: Job
           </section>
 
           <section className="card card-pad">
-            <h3 className="text-lg font-display font-semibold mb-4">Skills & certifications</h3>
+            <h3 className="text-base font-display font-semibold mb-3">Skills & certifications</h3>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <div><label className="label">Skills (comma-separated)</label><textarea rows={3} className="input resize-none" value={resume.skills} onChange={e => set('skills', e.target.value)} /></div>
-              <div><label className="label">Certifications (one per line)</label><textarea rows={3} className="input resize-none" value={resume.certifications} onChange={e => set('certifications', e.target.value)} /></div>
+              <div><label className="label">Skills (comma-separated)</label><textarea rows={2} className="input resize-none" value={resume.skills} onChange={e => set('skills', e.target.value)} /></div>
+              <div><label className="label">Certifications (one per line)</label><textarea rows={2} className="input resize-none" value={resume.certifications} onChange={e => set('certifications', e.target.value)} /></div>
             </div>
           </section>
         </div>
 
         {/* Preview */}
-        <div className="lg:sticky lg:top-6 self-start">
+        <div className="lg:sticky lg:top-6 self-start lg:max-h-[calc(100vh-120px)] lg:overflow-y-auto scroll-thin">
           <div className="text-xs text-ink-500 mb-2 flex items-center gap-2">
             <Eye className="w-3.5 h-3.5" /> Live preview · A4
           </div>
-          <div id="resume-paper" className="bg-white shadow-soft-lg rounded-md aspect-[1/1.414] overflow-y-auto scroll-thin p-8 sm:p-10 text-ink-900 text-[11px] sm:text-xs leading-snug">
+          <div id="resume-paper" className="bg-white shadow-soft-lg rounded-md aspect-[1/1.414] overflow-hidden p-8 sm:p-10 text-ink-900 text-[11px] sm:text-xs leading-snug">
             <header className="border-b-2 border-ink-900 pb-4 mb-4">
               <h1 className="font-display font-bold text-2xl text-ink-900 leading-tight">{resume.fullName || 'Your Name'}</h1>
               <p className="text-brand-700 font-semibold mt-1 text-sm">{resume.title || 'Target role'}</p>

@@ -1,12 +1,12 @@
 'use client';
 import { useState, useTransition } from 'react';
 import { useRouter } from 'next/navigation';
-import { Calendar, Clock, MoreHorizontal, Loader2 } from 'lucide-react';
+import { Calendar, Clock, MoreHorizontal, Loader2, Trash2 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import type { Job, JobApplication } from '@/lib/data';
 import { cn, formatDate } from '@/lib/utils';
 import { toast } from '@/components/ui/Toast';
-import { moveJobApplicationStatus } from '@/app/actions/jobApplications';
+import { moveJobApplicationStatus, deleteJobApplication } from '@/app/actions/jobApplications';
 
 const COLS = [
   { id: 'applied',   label: 'Applied',   stripe: 'bg-ink-300',     tone: 'badge-ink'      },
@@ -23,6 +23,7 @@ export function Kanban({ initial, jobs }: { initial: JobApplication[]; jobs: Job
   const [dragId, setDragId] = useState<string | null>(null);
   const [dragOver, setDragOver] = useState<Status | null>(null);
   const [pending, startTransition] = useTransition();
+  const [menuOpen, setMenuOpen] = useState<string | null>(null);
 
   function move(id: string, status: Status) {
     setApps((prev) => prev.map((a) => (a.id === id ? { ...a, status } : a)));
@@ -35,6 +36,22 @@ export function Kanban({ initial, jobs }: { initial: JobApplication[]; jobs: Job
         return;
       }
       toast(`Status updated to ${status}`, 'success');
+      router.refresh();
+    });
+  }
+
+  function handleDelete(id: string) {
+    setMenuOpen(null);
+    setApps((prev) => prev.filter((a) => a.id !== id));
+    startTransition(async () => {
+      const res = await deleteJobApplication(id);
+      if (res?.error) {
+        toast(res.error, 'error');
+        // rollback
+        setApps(initial);
+        return;
+      }
+      toast('Application removed', 'success');
       router.refresh();
     });
   }
@@ -78,7 +95,17 @@ export function Kanban({ initial, jobs }: { initial: JobApplication[]; jobs: Job
                           <p className="font-semibold text-ink-900 text-sm leading-snug truncate">{job?.title ?? 'Job'}</p>
                           <p className="text-xs text-ink-500 mt-0.5">{job?.company} {job?.city ? `· ${job.city}` : ''}</p>
                         </div>
-                        <button className="p-1 -m-1 rounded hover:bg-ink-100 text-ink-400"><MoreHorizontal className="w-4 h-4" /></button>
+                        <div className="relative">
+                          <button onClick={() => setMenuOpen(menuOpen === a.id ? null : a.id)} className="p-1 -m-1 rounded hover:bg-ink-100 text-ink-400"><MoreHorizontal className="w-4 h-4" /></button>
+                          {menuOpen === a.id && (
+                            <div className="absolute top-8 right-0 z-10 bg-white border border-ink-200 rounded-lg shadow-lg">
+                              <button onClick={() => handleDelete(a.id)} className="w-full px-3 py-2 text-left text-xs text-rose-600 hover:bg-rose-50 flex items-center gap-2 whitespace-nowrap">
+                                <Trash2 className="w-3.5 h-3.5" />
+                                Remove
+                              </button>
+                            </div>
+                          )}
+                        </div>
                       </div>
                       <div className="mt-3 flex items-center gap-2 text-xs text-ink-500">
                         <Calendar className="w-3.5 h-3.5" />

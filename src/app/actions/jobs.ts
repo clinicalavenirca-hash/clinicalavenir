@@ -118,14 +118,21 @@ export async function bulkImportJobs(input: {
 
   // Strip rows without a usable title or apply URL — those are noise.
   const cleaned = input.rows
-    .map((r) => ({
-      title: r.title?.trim() ?? '',
-      company: r.company?.trim() ?? '',
-      city: r.city?.trim() ?? '',
-      country: r.country?.trim() || 'Canada',
-      applyUrl: r.applyUrl?.trim() ?? '',
-      postedAt: r.postedAt
-    }))
+    .map((r) => {
+      let applyUrl = r.applyUrl?.trim() ?? '';
+      // Ensure URL has protocol
+      if (applyUrl && !applyUrl.match(/^https?:\/\//i)) {
+        applyUrl = 'https://' + applyUrl;
+      }
+      return {
+        title: r.title?.trim() ?? '',
+        company: r.company?.trim() ?? '',
+        city: r.city?.trim() ?? '',
+        country: r.country?.trim() || 'Canada',
+        applyUrl,
+        postedAt: r.postedAt
+      };
+    })
     .filter((r) => r.title && r.company && r.applyUrl);
 
   if (cleaned.length === 0) return { error: 'No rows had a title + company + URL.' };
@@ -192,4 +199,18 @@ export async function updateJobApplicantStatus(id: string, status: 'applied' | '
   if (error) return { error: error.message };
   revalidatePath('/admin/jobs');
   return { ok: true };
+}
+
+/** Admin bulk deletes jobs by their IDs. */
+export async function bulkDeleteJobs(jobIds: string[]) {
+  await requireAdmin();
+  const supa = supabaseServer();
+  if (!supa) return { error: 'Supabase not configured' };
+
+  if (!jobIds.length) return { error: 'No jobs selected.' };
+
+  const { error } = await supa.from('jobs').delete().in('id', jobIds);
+  if (error) return { error: error.message };
+  revalidateJobPaths();
+  return { ok: true, deleted: jobIds.length };
 }
