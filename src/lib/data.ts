@@ -54,6 +54,8 @@ export type Job = {
   /** External application URL. When set, students apply on the company site
    *  and the internal job_applications flow is bypassed entirely. */
   applyUrl: string | null;
+  /** Admin-only: whether this listing is visible to students. */
+  isPublished?: boolean;
 };
 
 export type Story = {

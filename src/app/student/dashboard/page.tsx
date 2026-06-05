@@ -33,34 +33,40 @@ export default async function DashboardPage() {
     <>
       <MyDecisionsRealtime />
       <Reveal>
-        <section className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-brand-700 via-brand-600 to-brand-800 p-6 sm:p-8 lg:p-10 text-white">
-          <div className="absolute inset-0 opacity-30 pointer-events-none">
-            <div className="absolute -top-20 -right-20 w-64 h-64 rounded-full bg-accent-500 blur-3xl" />
+        <section className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-ink-950 via-ink-900 to-brand-900 p-6 sm:p-8 lg:p-10 text-white ring-1 ring-white/10 shadow-soft-xl">
+          <div aria-hidden className="absolute inset-0 pointer-events-none">
+            <div className="absolute -top-24 -right-16 w-80 h-80 rounded-full bg-accent-500/30 blur-3xl" />
+            <div className="absolute -bottom-20 -left-10 w-72 h-72 rounded-full bg-brand-500/25 blur-3xl" />
+            <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_0%,rgba(255,255,255,0.06),transparent_60%)]" />
           </div>
           <div className="relative grid lg:grid-cols-12 gap-6 items-center">
             <div className="lg:col-span-8">
-              <p className="text-brand-200 text-sm font-medium">Welcome back</p>
-              <h1 className="mt-1 text-white">Hi, {me.name.split(' ')[0]} 👋</h1>
-              <p className="mt-3 text-brand-50 max-w-2xl">
+              <p className="inline-flex items-center gap-2 text-xs font-semibold tracking-[0.22em] uppercase text-accent-300">
+                <span className="w-6 h-px bg-accent-400" /> Welcome back
+              </p>
+              <h1 className="mt-2 text-white font-display">
+                Hi, {me.name.split(' ')[0]} <span className="text-accent-300">👋</span>
+              </h1>
+              <p className="mt-3 text-ink-200 max-w-2xl leading-relaxed">
                 Find roles tagged to your tracks, tailor your resume to each one, and prep for the
                 interview. Your job board is updated daily.
               </p>
               <div className="mt-6 flex flex-wrap gap-3">
-                <Link href="/student/jobs" className="btn-accent btn-md">View job board</Link>
-                <Link href="/student/resume" className="btn-secondary btn-md !bg-white/10 !text-white !border-white/30 hover:!bg-white/20">
+                <Link href="/student/jobs" className="btn-accent btn-md shadow-lg shadow-accent-500/30">View job board</Link>
+                <Link href="/student/resume" className="btn-secondary btn-md !bg-white/10 !text-white !border-white/20 backdrop-blur hover:!bg-white/20">
                   Tailor my resume
                 </Link>
               </div>
             </div>
             <div className="lg:col-span-4">
               <div className="grid grid-cols-2 gap-3">
-                <div className="bg-white/10 backdrop-blur rounded-xl p-4">
-                  <p className="text-xs text-brand-200">Jobs applied</p>
-                  <p className="font-display text-2xl font-bold mt-0.5">{myJobApps.length}</p>
+                <div className="relative overflow-hidden bg-white/[0.07] backdrop-blur rounded-2xl p-4 ring-1 ring-white/15">
+                  <p className="text-[10px] font-semibold tracking-[0.18em] uppercase text-accent-300">Jobs applied</p>
+                  <p className="font-display text-3xl font-bold mt-1 text-white">{myJobApps.length}</p>
                 </div>
-                <div className="bg-white/10 backdrop-blur rounded-xl p-4">
-                  <p className="text-xs text-brand-200">In motion</p>
-                  <p className="font-display text-2xl font-bold mt-0.5">{activeApps}</p>
+                <div className="relative overflow-hidden bg-white/[0.07] backdrop-blur rounded-2xl p-4 ring-1 ring-white/15">
+                  <p className="text-[10px] font-semibold tracking-[0.18em] uppercase text-accent-300">In motion</p>
+                  <p className="font-display text-3xl font-bold mt-1 text-white">{activeApps}</p>
                 </div>
               </div>
             </div>
@@ -110,8 +116,8 @@ export default async function DashboardPage() {
 
         <div className="lg:col-span-5 space-y-4">
           <Reveal as="div">
-            <Link href="/student/jobs" className="card card-pad card-hover flex items-start gap-4 ring-1 ring-brand-100 bg-brand-50/40">
-              <span className="w-12 h-12 rounded-xl bg-brand-600 text-white grid place-items-center flex-shrink-0">
+            <Link href="/student/jobs" className="card card-pad card-hover flex items-start gap-4 ring-1 ring-brand-200/60 bg-gradient-to-br from-brand-50 to-cream-50">
+              <span className="w-12 h-12 rounded-xl bg-gradient-to-br from-brand-500 to-brand-700 text-white grid place-items-center flex-shrink-0 shadow-md shadow-brand-700/20">
                 <Briefcase className="w-6 h-6" />
               </span>
               <div className="min-w-0">
@@ -121,8 +127,8 @@ export default async function DashboardPage() {
             </Link>
           </Reveal>
           <Reveal as="div" delay={0.04}>
-            <Link href="/student/ai-assistant" className="card card-pad card-hover flex items-start gap-4">
-              <span className="w-12 h-12 rounded-xl bg-ink-950 text-white grid place-items-center flex-shrink-0">
+            <Link href="/student/ai-assistant" className="card card-pad card-hover flex items-start gap-4 ring-1 ring-ink-200/60 bg-gradient-to-br from-ink-50 to-white">
+              <span className="w-12 h-12 rounded-xl bg-gradient-to-br from-ink-900 to-ink-950 text-white grid place-items-center flex-shrink-0 shadow-md shadow-ink-900/20">
                 <BrainCircuit className="w-6 h-6" />
               </span>
               <div className="min-w-0">
@@ -132,8 +138,8 @@ export default async function DashboardPage() {
             </Link>
           </Reveal>
           <Reveal as="div" delay={0.08}>
-            <Link href="/student/resume" className="card card-pad card-hover flex items-start gap-4">
-              <span className="w-12 h-12 rounded-xl bg-accent-50 text-accent-700 grid place-items-center flex-shrink-0">
+            <Link href="/student/resume" className="card card-pad card-hover flex items-start gap-4 ring-1 ring-accent-200/60 bg-gradient-to-br from-accent-50 to-white">
+              <span className="w-12 h-12 rounded-xl bg-gradient-to-br from-accent-400 to-accent-600 text-white grid place-items-center flex-shrink-0 shadow-md shadow-accent-500/25">
                 <FileText className="w-6 h-6" />
               </span>
               <div className="min-w-0">
@@ -143,8 +149,8 @@ export default async function DashboardPage() {
             </Link>
           </Reveal>
           <Reveal as="div" delay={0.12}>
-            <Link href="/student/interview-prep" className="card card-pad card-hover flex items-start gap-4">
-              <span className="w-12 h-12 rounded-xl bg-brand-50 text-brand-700 grid place-items-center flex-shrink-0">
+            <Link href="/student/interview-prep" className="card card-pad card-hover flex items-start gap-4 ring-1 ring-brand-200/60 bg-gradient-to-br from-cream-50 to-white">
+              <span className="w-12 h-12 rounded-xl bg-gradient-to-br from-brand-400 to-brand-600 text-white grid place-items-center flex-shrink-0 shadow-md shadow-brand-600/20">
                 <GraduationCap className="w-6 h-6" />
               </span>
               <div className="min-w-0">
@@ -153,16 +159,19 @@ export default async function DashboardPage() {
               </div>
             </Link>
           </Reveal>
-          <Reveal as="div" delay={0.16} className="card card-pad bg-gradient-to-br from-ink-900 to-ink-800 text-white">
-            <p className="text-xs font-semibold text-brand-300 uppercase tracking-wider">Tip</p>
-            <p className="mt-2 font-semibold">Apply to 3 roles this week.</p>
-            <p className="mt-1 text-sm text-ink-300 leading-relaxed">
-              Applications snowball. The earlier you start, the more interviews you&apos;ll have next month.
-            </p>
-            <Link href="/student/jobs" className="mt-4 btn-secondary btn-sm !bg-white/10 !text-white !border-white/20 hover:!bg-white/20">
-              Open job board
-              <ArrowUpRight className="w-3.5 h-3.5" strokeWidth={2.2} />
-            </Link>
+          <Reveal as="div" delay={0.16} className="relative overflow-hidden card card-pad bg-gradient-to-br from-ink-950 via-ink-900 to-brand-900 text-white ring-1 ring-white/10">
+            <div aria-hidden className="absolute -top-10 -right-10 w-40 h-40 rounded-full bg-accent-500/20 blur-3xl pointer-events-none" />
+            <div className="relative">
+              <p className="text-[10px] font-semibold text-accent-300 uppercase tracking-[0.22em]">Tip</p>
+              <p className="mt-2 font-semibold text-white">Apply to 3 roles this week.</p>
+              <p className="mt-1 text-sm text-ink-300 leading-relaxed">
+                Applications snowball. The earlier you start, the more interviews you&apos;ll have next month.
+              </p>
+              <Link href="/student/jobs" className="mt-4 btn-secondary btn-sm !bg-white/10 !text-white !border-white/20 hover:!bg-white/20">
+                Open job board
+                <ArrowUpRight className="w-3.5 h-3.5" strokeWidth={2.2} />
+              </Link>
+            </div>
           </Reveal>
         </div>
       </section>

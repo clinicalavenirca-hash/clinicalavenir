@@ -43,7 +43,8 @@ function rowToJob(r: Row): Job {
     description: r.description ?? '',
     qualifications: r.qualifications ?? [],
     postedAt: r.posted_at,
-    applyUrl: r.apply_url ?? null
+    applyUrl: r.apply_url ?? null,
+    isPublished: r.is_published
   };
 }
 
